@@ -66,7 +66,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       const SizedBox(height: 6),
       Text(
-        'Настройте Subly под себя.',
+        'Настройте Sumly под себя.',
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       const SizedBox(height: 22),
@@ -204,7 +204,7 @@ class SettingsScreen extends StatelessWidget {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.info_outline_rounded),
-              title: const Text('О Subly'),
+              title: const Text('О Sumly'),
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: onAbout,
             ),
