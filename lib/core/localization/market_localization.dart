@@ -362,7 +362,7 @@ const _offerTexts = <String, Map<String, String>>{
     'rateFact': "Interest rate",
     'openApp': "Open in app",
     'openBrowser': "Open in browser",
-    'disclaimer': "Subly is not a lender. Check the full cost and product terms on the partner website.",
+    'disclaimer': "Sumly is not a lender. Check the full cost and product terms on the partner website.",
     'unavailable': "Offers are temporarily unavailable",
     'tryLater': "Please try opening this section again later.",
   },
@@ -375,7 +375,7 @@ const _offerTexts = <String, Map<String, String>>{
     'rateFact': "Rate ng interes",
     'openApp': "Buksan sa app",
     'openBrowser': "Buksan sa browser",
-    'disclaimer': "Hindi nagpapautang ang Subly. Suriin ang kabuuang gastos at mga kondisyon ng produkto sa website ng kasosyo.",
+    'disclaimer': "Hindi nagpapautang ang Sumly. Suriin ang kabuuang gastos at mga kondisyon ng produkto sa website ng kasosyo.",
     'unavailable': "Pansamantalang walang mga alok",
     'tryLater': "Pakisubukang buksan muli ang seksiyong ito mamaya.",
   },
@@ -389,7 +389,7 @@ const _offerTexts = <String, Map<String, String>>{
     'openApp': 'Открыть в приложении',
     'openBrowser': 'Открыть в браузере',
     'disclaimer':
-        'Subly не является кредитором. Проверяйте полную стоимость и условия продукта на сайте партнёра.',
+        'Sumly не является кредитором. Проверяйте полную стоимость и условия продукта на сайте партнёра.',
     'unavailable': 'Предложения временно недоступны',
     'tryLater': 'Попробуйте открыть этот раздел позже.',
   },
@@ -403,7 +403,7 @@ const _offerTexts = <String, Map<String, String>>{
     'openApp': 'Abrir en la aplicación',
     'openBrowser': 'Abrir en el navegador',
     'disclaimer':
-        'Subly no es un prestamista. Consulta el coste total y las condiciones en el sitio del socio.',
+        'Sumly no es un prestamista. Consulta el coste total y las condiciones en el sitio del socio.',
     'unavailable': 'Ofertas no disponibles',
     'tryLater': 'Inténtalo de nuevo más tarde.',
   },
@@ -417,7 +417,7 @@ const _offerTexts = <String, Map<String, String>>{
     'openApp': 'Abrir en la aplicación',
     'openBrowser': 'Abrir en el navegador',
     'disclaimer':
-        'Subly no es un prestamista. Consulta el coste total y las condiciones en el sitio del socio.',
+        'Sumly no es un prestamista. Consulta el coste total y las condiciones en el sitio del socio.',
     'unavailable': 'Ofertas no disponibles',
     'tryLater': 'Inténtalo de nuevo más tarde.',
   },
@@ -431,7 +431,7 @@ const _offerTexts = <String, Map<String, String>>{
     'openApp': 'Ilovada ochish',
     'openBrowser': 'Brauzerda ochish',
     'disclaimer':
-        'Subly kreditor emas. To‘liq narx va shartlarni hamkor saytida tekshiring.',
+        'Sumly kreditor emas. To‘liq narx va shartlarni hamkor saytida tekshiring.',
     'unavailable': 'Takliflar vaqtincha mavjud emas',
     'tryLater': 'Keyinroq qayta urinib ko‘ring.',
   },
@@ -445,7 +445,7 @@ const _offerTexts = <String, Map<String, String>>{
     'openApp': 'Қосымшада ашу',
     'openBrowser': 'Браузерде ашу',
     'disclaimer':
-        'Subly кредитор емес. Толық құны мен шарттарын серіктес сайтынан тексеріңіз.',
+        'Sumly кредитор емес. Толық құны мен шарттарын серіктес сайтынан тексеріңіз.',
     'unavailable': 'Ұсыныстар уақытша қолжетімсіз',
     'tryLater': 'Кейінірек қайталап көріңіз.',
   },
@@ -459,7 +459,7 @@ const _offerTexts = <String, Map<String, String>>{
     'openApp': 'Mở trong ứng dụng',
     'openBrowser': 'Mở trong trình duyệt',
     'disclaimer':
-        'Subly không phải là bên cho vay. Hãy kiểm tra đầy đủ chi phí và điều kiện trên trang đối tác.',
+        'Sumly không phải là bên cho vay. Hãy kiểm tra đầy đủ chi phí và điều kiện trên trang đối tác.',
     'unavailable': 'Ưu đãi tạm thời không khả dụng',
     'tryLater': 'Vui lòng thử lại sau.',
   },
