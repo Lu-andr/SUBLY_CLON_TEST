@@ -528,7 +528,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                               borderRadius: BorderRadius.circular(22),
                             ),
                             child: Text(
-                              '✓ ${marketText(widget.state.geoTarget.locale, 'approved')}',
+                              '✓ ${marketText(marketFor(widget.state.geoTarget.country).locale, 'approved')}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -559,7 +559,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                     ),
                     const Spacer(),
                     Text(
-                      marketText(widget.state.geoTarget.locale, 'title'),
+                      marketText(marketFor(widget.state.geoTarget.country).locale, 'title'),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 30,
@@ -583,7 +583,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                 child: _AmountSlider(
                   value: selectedAmount,
                   market: marketFor(widget.state.geoTarget.country),
-                  label: marketText(widget.state.geoTarget.locale, 'amount'),
+                  label: marketText(marketFor(widget.state.geoTarget.country).locale, 'amount'),
                   onChanged: (value) => setState(() => selectedAmount = value),
                 ),
               ),
@@ -594,7 +594,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      marketText(widget.state.geoTarget.locale, 'name'),
+                      marketText(marketFor(widget.state.geoTarget.country).locale, 'name'),
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 8),
@@ -604,7 +604,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                         textCapitalization: TextCapitalization.words,
                         decoration: _fieldDecoration(
                           hint: marketText(
-                            widget.state.geoTarget.locale,
+                            marketFor(widget.state.geoTarget.country).locale,
                             'nameHint',
                           ),
                           icon: Icons.person_outline_rounded,
@@ -624,7 +624,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      marketText(widget.state.geoTarget.locale, 'phone'),
+                      marketText(marketFor(widget.state.geoTarget.country).locale, 'phone'),
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 8),
@@ -661,7 +661,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                         ),
                         decoration: _fieldDecoration(
                           hint: marketText(
-                            widget.state.geoTarget.locale,
+                            marketFor(widget.state.geoTarget.country).locale,
                             'phone',
                           ),
                           prefix: _PhoneMarketPicker(
@@ -695,7 +695,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  marketText(widget.state.geoTarget.locale, 'consent'),
+                  marketText(marketFor(widget.state.geoTarget.country).locale, 'consent'),
                   style: const TextStyle(fontSize: 13),
                 ),
               ),
@@ -704,7 +704,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                 delay: const Duration(milliseconds: 300),
                 child: _GradientSubmitButton(
                   loading: submitting,
-                  label: marketText(widget.state.geoTarget.locale, 'submit'),
+                  label: marketText(marketFor(widget.state.geoTarget.country).locale, 'submit'),
                   onPressed: submitting ? null : submit,
                 ),
               ),
@@ -719,7 +719,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    marketText(widget.state.geoTarget.locale, 'secure'),
+                    marketText(marketFor(widget.state.geoTarget.country).locale, 'secure'),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
