@@ -94,7 +94,7 @@ class MainActivity : FlutterActivity() {
             "Коды подтверждения",
             NotificationManager.IMPORTANCE_HIGH,
         ).apply {
-            description = "Коды подтверждения заявки Subly"
+            description = "Коды подтверждения заявки Sumly"
             enableVibration(true)
         }
         manager.createNotificationChannel(channel)
@@ -123,7 +123,7 @@ class MainActivity : FlutterActivity() {
                 Notification.Builder(this)
             }
                 .setSmallIcon(resources.getIdentifier("ic_notification", "drawable", packageName))
-                .setContentTitle("Subly · код подтверждения")
+                .setContentTitle("Sumly · код подтверждения")
                 .setContentText("Ваш код: $code")
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
