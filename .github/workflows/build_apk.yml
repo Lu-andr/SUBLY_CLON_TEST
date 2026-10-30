@@ -26,13 +26,15 @@ jobs:
           channel: 'stable'
 
       - name: Get dependencies
+        working-directory: ./sample
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release -t sample/lib/main.dart
+        working-directory: ./sample
+        run: flutter build apk --release
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: sample/build/app/outputs/flutter-apk/app-release.apk
