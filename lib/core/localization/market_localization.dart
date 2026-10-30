@@ -483,3 +483,4 @@ String marketText(String locale, String key) {
       _offerTexts['ru']?[key] ??
       key;
 }
+
