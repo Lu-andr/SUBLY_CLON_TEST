@@ -1730,7 +1730,15 @@ class _CenteredStep extends StatelessWidget {
       padding: const EdgeInsets.all(28),
       child: Column(
         children: [
-          _FlowIcon(icon: icon),
+          if (icon == Icons.hourglass_top_rounded)
+            Image.asset(
+              'assets/branding/subly-logo-v1.png',
+              package: 'subly',
+              width: 76,
+              height: 76,
+            )
+          else
+            _FlowIcon(icon: icon),
           const SizedBox(height: 28),
           Text(
             title,
