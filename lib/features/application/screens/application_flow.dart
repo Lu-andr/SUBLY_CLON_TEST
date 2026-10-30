@@ -1483,13 +1483,16 @@ class _AmountSlider extends StatelessWidget {
           builder: (_, animated, _) => Text(
             formatMarketAmount(animated, market),
             style: const TextStyle(
-              color: SublyColors.purple,
+              color: Color(0xFF461091),
               fontSize: 28,
               fontWeight: FontWeight.w900,
             ),
           ),
         ),
         Slider(
+          activeColor: const Color(0xFF461091),
+          thumbColor: const Color(0xFF461091),
+          inactiveColor: const Color(0xFFE4DCEE),
           value: value,
           min: market.minAmount,
           max: market.maxAmount,
@@ -1551,7 +1554,7 @@ class _GradientSubmitButtonState extends State<_GradientSubmitButton> {
           height: 62,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFFA7D95F), Color(0xFF21A864)],
+              colors: [Color(0xFF3716B1), Color(0xFF6028EF)],
             ),
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
