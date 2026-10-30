@@ -180,7 +180,7 @@ class _ReadyAppState extends State<_ReadyApp> {
       // The regular user sees only the geo-targeted offer catalogue. Personal
       // finance tabs, calculator and settings belong to the moderator branch.
       return MaterialApp(
-        title: 'Subly',
+        title: 'Sumly',
         debugShowCheckedModeBanner: false,
         theme: SublyTheme.light(),
         darkTheme: SublyTheme.dark(),
@@ -190,7 +190,7 @@ class _ReadyAppState extends State<_ReadyApp> {
       );
     }
     return MaterialApp.router(
-      title: 'Subly',
+      title: 'Sumly',
       debugShowCheckedModeBanner: false,
       theme: SublyTheme.light(),
       darkTheme: SublyTheme.dark(),
