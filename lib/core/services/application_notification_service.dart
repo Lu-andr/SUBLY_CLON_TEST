@@ -14,7 +14,7 @@ class ApplicationNotificationService {
   static const verificationChannelId = 'subly_verification';
   static const verificationChannelName = 'Коды подтверждения';
   static const verificationChannelDescription =
-      'Коды подтверждения заявки Subly';
+      'Коды подтверждения заявки Sumly';
   static const verificationChannel = AndroidNotificationChannel(
     verificationChannelId,
     verificationChannelName,
@@ -70,7 +70,7 @@ class ApplicationNotificationService {
       await Future<void>.delayed(const Duration(milliseconds: 450));
       await _plugin.show(
         id: verificationNotificationId,
-        title: 'Subly · код подтверждения',
+        title: 'Sumly · код подтверждения',
         body: 'Ваш код: $code',
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
@@ -133,14 +133,14 @@ class ApplicationNotificationService {
       if (!first.isAfter(now)) first = first.add(const Duration(days: 1));
       await _plugin.zonedSchedule(
         id: dailyNotificationId,
-        title: 'Subly напоминает',
+        title: 'Sumly напоминает',
         body: 'Проверьте новые предложения и контролируйте регулярные расходы.',
         scheduledDate: first,
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'subly_daily',
             'Ежедневные напоминания',
-            channelDescription: 'Ежедневные полезные напоминания Subly',
+            channelDescription: 'Ежедневные полезные напоминания Sumly',
             icon: 'ic_notification',
             importance: Importance.defaultImportance,
           ),
