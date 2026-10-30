@@ -140,7 +140,7 @@ String formatMarketAmount(num amount, MarketOption market) {
 
 const _texts = <String, Map<String, String>>{
   'en': {
-    'title': "First loan at 0%",
+    'title': "90% of applications approved",
     'approved': "Approval in 5 minutes",
     'amount': "Loan amount",
     'name': "What is your name?",
@@ -153,7 +153,7 @@ const _texts = <String, Map<String, String>>{
     'cabinet': "Personal account",
   },
   'fil': {
-    'title': "0% interes sa unang pautang",
+    'title': "90% ng mga aplikasyon ay naaprubahan",
     'approved': "Pag-apruba sa loob ng 5 minuto",
     'amount': "Halaga ng pautang",
     'name': "Ano ang pangalan mo?",
@@ -166,7 +166,7 @@ const _texts = <String, Map<String, String>>{
     'cabinet': "Personal na account",
   },
   'ru': {
-    'title': 'Первый займ под 0%',
+    'title': '90% заявок одобрено',
     'approved': 'Одобрение за 5 минут',
     'amount': 'Сумма займа',
     'name': 'Как вас зовут?',
@@ -179,7 +179,7 @@ const _texts = <String, Map<String, String>>{
     'cabinet': 'Личный кабинет',
   },
   'es-ar': {
-    'title': 'Tu primer préstamo al 0%',
+    'title': '90% de las solicitudes aprobadas',
     'approved': 'Aprobación en 5 minutos',
     'amount': 'Monto del préstamo',
     'name': '¿Cómo te llamas?',
@@ -192,7 +192,7 @@ const _texts = <String, Map<String, String>>{
     'cabinet': 'Área personal',
   },
   'es-mx': {
-    'title': 'Tu primer préstamo al 0%',
+    'title': '90% de las solicitudes aprobadas',
     'approved': 'Aprobación en 5 minutos',
     'amount': 'Monto del préstamo',
     'name': '¿Cómo te llamas?',
@@ -205,7 +205,7 @@ const _texts = <String, Map<String, String>>{
     'cabinet': 'Área personal',
   },
   'uz': {
-    'title': 'Birinchi qarz 0%',
+    'title': 'Arizalarning 90% tasdiqlangan',
     'approved': '5 daqiqada tasdiqlash',
     'amount': 'Qarz miqdori',
     'name': 'Ismingiz nima?',
@@ -218,7 +218,7 @@ const _texts = <String, Map<String, String>>{
     'cabinet': 'Shaxsiy kabinet',
   },
   'kk': {
-    'title': 'Алғашқы қарыз 0%',
+    'title': 'Өтінімдердің 90%-ы мақұлданды',
     'approved': '5 минутта мақұлдау',
     'amount': 'Қарыз сомасы',
     'name': 'Атыңыз кім?',
@@ -231,7 +231,7 @@ const _texts = <String, Map<String, String>>{
     'cabinet': 'Жеке кабинет',
   },
   'vi': {
-    'title': 'Khoản vay đầu tiên 0%',
+    'title': '90% hồ sơ được phê duyệt',
     'approved': 'Duyệt trong 5 phút',
     'amount': 'Số tiền vay',
     'name': 'Tên của bạn?',
