@@ -29,6 +29,20 @@ jobs:
         working-directory: ./sample
         run: flutter pub get
 
+      - name: Generate Android launcher icons from brand logo
+        run: |
+          python3 -m pip install Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          source = Image.open('assets/branding/subly-logo-v1.png').convert('RGBA')
+          root = Path('sample/android/app/src/main/res')
+          for density, size in [('mdpi',48),('hdpi',72),('xhdpi',96),('xxhdpi',144),('xxxhdpi',192)]:
+              folder = root / ('mipmap-' + density)
+              folder.mkdir(parents=True, exist_ok=True)
+              source.resize((size,size), Image.Resampling.LANCZOS).save(folder / 'ic_launcher.png')
+          PY
+
       - name: Build APK
         working-directory: ./sample
         run: flutter build apk --release
