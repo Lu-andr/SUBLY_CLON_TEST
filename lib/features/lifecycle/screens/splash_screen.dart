@@ -35,7 +35,7 @@ class SplashScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Subly',
+              'Sumly',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 34,
