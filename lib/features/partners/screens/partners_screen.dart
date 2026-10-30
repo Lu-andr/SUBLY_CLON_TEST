@@ -386,6 +386,10 @@ Future<void> _showOfferMarketSheet(
   final selected = await showModalBottomSheet<String>(
     context: context,
     backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    constraints: BoxConstraints(
+      maxHeight: MediaQuery.sizeOf(context).height * 0.9,
+    ),
     builder: (sheetContext) => SafeArea(
       child: Container(
         margin: const EdgeInsets.all(12),
@@ -397,7 +401,8 @@ Future<void> _showOfferMarketSheet(
             BoxShadow(color: Color(0x330B2E18), blurRadius: 32),
           ],
         ),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
@@ -442,6 +447,7 @@ Future<void> _showOfferMarketSheet(
               );
             }),
           ],
+          ),
         ),
       ),
     ),
