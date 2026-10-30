@@ -20,6 +20,14 @@
       "name": "KZ",
       "expression": "device.country in ['kz']"
     },
+	{
+      "name": "ZA",
+      "expression": "device.country in ['za']"
+    },
+    {
+      "name": "PH",
+      "expression": "device.country in ['ph']"
+    },
     {
       "name": "VN",
       "expression": "device.country in ['vn']"
@@ -46,6 +54,12 @@
         "KZ": {
           "value": "{\"country\":\"KZ\",\"locale\":\"kk\"}"
         },
+		"ZA": {
+          "value": "{\"country\":\"ZA\",\"locale\":\"en\"}"
+        },
+        "PH": {
+        "value": "{\"country\":\"PH\",\"locale\":\"fil\"}"
+         },
         "VN": {
           "value": "{\"country\":\"VN\",\"locale\":\"vi\"}"
         }
