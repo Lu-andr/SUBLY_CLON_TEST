@@ -354,7 +354,7 @@ const _dashboardTexts = <String, Map<String, String>>{
 
 const _offerTexts = <String, Map<String, String>>{
   'en': {
-    'offerSubtitle': "Compare offers and choose a suitable option",
+    'offerSubtitle': "Compare and choose",
     'social': "Today 1558 people received a loan",
     'available': "Available offers",
     'amountFact': "Amount",
@@ -367,7 +367,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': "Please try opening this section again later.",
   },
   'fil': {
-    'offerSubtitle': "Ihambing ang mga alok at piliin ang angkop na opsyon",
+    'offerSubtitle': "Ihambing at pumili",
     'social': "Ngayong araw, 1558 katao ang nakatanggap ng pautang",
     'available': "Mga available na alok",
     'amountFact': "Halaga",
@@ -380,7 +380,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': "Pakisubukang buksan muli ang seksiyong ito mamaya.",
   },
   'ru': {
-    'offerSubtitle': 'Сравните предложения и выберите удобный вариант',
+    'offerSubtitle': 'Сравнивай и выбирай',
     'social': 'Сегодня 1558 человек получили займ',
     'available': 'Доступные предложения',
     'amountFact': 'Сумма',
@@ -394,7 +394,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Попробуйте открыть этот раздел позже.',
   },
   'es-ar': {
-    'offerSubtitle': 'Compara las ofertas y elige la más conveniente',
+    'offerSubtitle': 'Compará y elegí',
     'social': 'Hoy 1558 personas recibieron un préstamo',
     'available': 'Ofertas disponibles',
     'amountFact': 'Monto',
@@ -408,7 +408,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Inténtalo de nuevo más tarde.',
   },
   'es-mx': {
-    'offerSubtitle': 'Compara las ofertas y elige la más conveniente',
+    'offerSubtitle': 'Compara y elige',
     'social': 'Hoy 1558 personas recibieron un préstamo',
     'available': 'Ofertas disponibles',
     'amountFact': 'Monto',
@@ -422,7 +422,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Inténtalo de nuevo más tarde.',
   },
   'uz': {
-    'offerSubtitle': 'Takliflarni solishtiring va qulay variantni tanlang',
+    'offerSubtitle': 'Solishtir va tanla',
     'social': 'Bugun 1558 kishi qarz oldi',
     'available': 'Mavjud takliflar',
     'amountFact': 'Summa',
@@ -436,7 +436,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Keyinroq qayta urinib ko‘ring.',
   },
   'kk': {
-    'offerSubtitle': 'Ұсыныстарды салыстырып, қолайлысын таңдаңыз',
+    'offerSubtitle': 'Салыстыр және таңда',
     'social': 'Бүгін 1558 адам қарыз алды',
     'available': 'Қолжетімді ұсыныстар',
     'amountFact': 'Сома',
@@ -450,7 +450,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Кейінірек қайталап көріңіз.',
   },
   'vi': {
-    'offerSubtitle': 'So sánh ưu đãi và chọn phương án phù hợp',
+    'offerSubtitle': 'So sánh và lựa chọn',
     'social': 'Hôm nay 1558 người đã nhận khoản vay',
     'available': 'Ưu đãi hiện có',
     'amountFact': 'Số tiền',
