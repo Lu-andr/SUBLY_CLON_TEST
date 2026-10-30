@@ -101,6 +101,30 @@ const supportedMarkets = <MarketOption>[
     initialAmount: 5000000,
     amountStep: 500000,
   ),
+  MarketOption(
+    country: 'ZA',
+    locale: 'en',
+    flag: '🇿🇦',
+    label: 'English',
+    currency: 'R',
+    dialCode: '27',
+    minAmount: 1000,
+    maxAmount: 100000,
+    initialAmount: 15000,
+    amountStep: 1000,
+  ),
+  MarketOption(
+    country: 'PH',
+    locale: 'fil',
+    flag: '🇵🇭',
+    label: 'Filipino',
+    currency: '₱',
+    dialCode: '63',
+    minAmount: 1000,
+    maxAmount: 40000,
+    initialAmount: 10000,
+    amountStep: 1000,
+  ),
 ];
 
 MarketOption marketFor(String country) => supportedMarkets.firstWhere(
@@ -108,10 +132,39 @@ MarketOption marketFor(String country) => supportedMarkets.firstWhere(
   orElse: () => supportedMarkets.first,
 );
 
-String formatMarketAmount(num amount, MarketOption market) =>
-    '${NumberFormat.decimalPattern(market.locale).format(amount.round())} ${market.currency}';
+String formatMarketAmount(num amount, MarketOption market) {
+  // Filipino UI uses the same grouping and decimal separators as English.
+  final numberLocale = market.locale == 'fil' ? 'en' : market.locale;
+  return '${NumberFormat.decimalPattern(numberLocale).format(amount.round())} ${market.currency}';
+}
 
 const _texts = <String, Map<String, String>>{
+  'en': {
+    'title': "First loan at 0%",
+    'approved': "Approval in 5 minutes",
+    'amount': "Loan amount",
+    'name': "What is your name?",
+    'nameHint': "Name",
+    'phone': "Phone number",
+    'consent': "I agree to the processing of my personal data",
+    'submit': "Submit application",
+    'secure': "Your data is protected",
+    'offers': "Offers for you",
+    'cabinet': "Personal account",
+  },
+  'fil': {
+    'title': "0% interes sa unang pautang",
+    'approved': "Pag-apruba sa loob ng 5 minuto",
+    'amount': "Halaga ng pautang",
+    'name': "Ano ang pangalan mo?",
+    'nameHint': "Pangalan",
+    'phone': "Numero ng telepono",
+    'consent': "Pumapayag ako sa pagproseso ng aking personal na datos",
+    'submit': "Isumite ang aplikasyon",
+    'secure': "Protektado ang iyong datos",
+    'offers': "Mga alok para sa iyo",
+    'cabinet': "Personal na account",
+  },
   'ru': {
     'title': 'Первый займ под 0%',
     'approved': 'Одобрение за 5 минут',
@@ -193,6 +246,32 @@ const _texts = <String, Map<String, String>>{
 };
 
 const _dashboardTexts = <String, Map<String, String>>{
+  'en': {
+    'tools': "Useful tools",
+    'application': "Application for",
+    'pending': "Awaiting a decision",
+    'calculator': "Calculator",
+    'calcAmount': "Amount",
+    'term': "Term",
+    'days': "days",
+    'rate': "Interest rate",
+    'repay': "Total repayment",
+    'tips': "Useful tips",
+    'tipsDesc': "Recommendations to help you make an informed decision.",
+  },
+  'fil': {
+    'tools': "Mga kapaki-pakinabang na tool",
+    'application': "Aplikasyon para sa",
+    'pending': "Naghihintay ng desisyon",
+    'calculator': "Kalkulador",
+    'calcAmount': "Halaga",
+    'term': "Tagal",
+    'days': "araw",
+    'rate': "Rate ng interes",
+    'repay': "Kabuuang babayaran",
+    'tips': "Mga kapaki-pakinabang na payo",
+    'tipsDesc': "Mga mungkahing makatutulong sa iyong gumawa ng tamang desisyon.",
+  },
   'ru': {
     'tools': 'Полезные инструменты',
     'application': 'Заявка на',
@@ -274,6 +353,32 @@ const _dashboardTexts = <String, Map<String, String>>{
 };
 
 const _offerTexts = <String, Map<String, String>>{
+  'en': {
+    'offerSubtitle': "Compare offers and choose a suitable option",
+    'social': "Today 1558 people received a loan",
+    'available': "Available offers",
+    'amountFact': "Amount",
+    'timeFact': "Processing time",
+    'rateFact': "Interest rate",
+    'openApp': "Open in app",
+    'openBrowser': "Open in browser",
+    'disclaimer': "Subly is not a lender. Check the full cost and product terms on the partner website.",
+    'unavailable': "Offers are temporarily unavailable",
+    'tryLater': "Please try opening this section again later.",
+  },
+  'fil': {
+    'offerSubtitle': "Ihambing ang mga alok at piliin ang angkop na opsyon",
+    'social': "Ngayong araw, 1558 katao ang nakatanggap ng pautang",
+    'available': "Mga available na alok",
+    'amountFact': "Halaga",
+    'timeFact': "Oras ng pagproseso",
+    'rateFact': "Rate ng interes",
+    'openApp': "Buksan sa app",
+    'openBrowser': "Buksan sa browser",
+    'disclaimer': "Hindi nagpapautang ang Subly. Suriin ang kabuuang gastos at mga kondisyon ng produkto sa website ng kasosyo.",
+    'unavailable': "Pansamantalang walang mga alok",
+    'tryLater': "Pakisubukang buksan muli ang seksiyong ito mamaya.",
+  },
   'ru': {
     'offerSubtitle': 'Сравните предложения и выберите удобный вариант',
     'social': 'Сегодня 1558 человек получили займ',
@@ -360,11 +465,21 @@ const _offerTexts = <String, Map<String, String>>{
   },
 };
 
-String marketText(String locale, String key) =>
-    _texts[locale]?[key] ??
-    _dashboardTexts[locale]?[key] ??
-    _offerTexts[locale]?[key] ??
-    _texts['ru']?[key] ??
-    _dashboardTexts['ru']?[key] ??
-    _offerTexts['ru']?[key] ??
-    key;
+String marketText(String locale, String key) {
+  final normalized = locale.toLowerCase().replaceAll('_', '-');
+  final language = normalized == 'en' || normalized.startsWith('en-')
+      ? 'en'
+      : normalized == 'fil' ||
+            normalized == 'tl' ||
+            normalized.startsWith('fil-') ||
+            normalized.startsWith('tl-')
+      ? 'fil'
+      : normalized;
+  return _texts[language]?[key] ??
+      _dashboardTexts[language]?[key] ??
+      _offerTexts[language]?[key] ??
+      _texts['ru']?[key] ??
+      _dashboardTexts['ru']?[key] ??
+      _offerTexts['ru']?[key] ??
+      key;
+}
