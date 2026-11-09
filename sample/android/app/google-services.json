@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11689088049",
+    "project_id": "sumly-886db",
+    "storage_bucket": "sumly-886db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11689088049:android:6f350f30fd0b821e373110",
+        "android_client_info": {
+          "package_name": "com.cash.credit.loans.zaim.kredit.qarz.karyz.utang.vay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKXnQFUGyADlqw2mzdUdkadQsfopjwELo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
