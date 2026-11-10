@@ -291,10 +291,6 @@ class _OfferCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (offer.isFeatured)
-                const Icon(Icons.verified_rounded, color: SublyColors.purple),
-              const SizedBox(width: 6),
-              const Icon(Icons.arrow_forward_rounded),
             ],
           ),
           if (offer.parameters.isNotEmpty) ...[
@@ -308,7 +304,7 @@ class _OfferCard extends StatelessWidget {
                     (entry) => _Fact(
                       label: switch (entry.key) {
                         'amount' => marketText(locale, 'amountFact'),
-                        'processingTime' => marketText(locale, 'timeFact'),
+                        'processingTime' => marketText(locale, 'termFact'),
                         'interestRate' => marketText(locale, 'rateFact'),
                         _ => entry.key,
                       },
@@ -320,16 +316,22 @@ class _OfferCard extends StatelessWidget {
           ],
           const SizedBox(height: 18),
           Material(
-            color: SublyColors.green,
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(16),
             child: InkWell(
               onTap: onOpen,
               borderRadius: BorderRadius.circular(16),
-              child: SizedBox(
+              child: Ink(
                 height: 52,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF461091), Color(0xFFF020BD)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: Center(
                   child: Text(
-                    offer.ctaText,
+                    marketText(locale, 'applyOffer'),
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w800,
@@ -579,7 +581,7 @@ class _PartnerDetailScreen extends StatelessWidget {
         ),
         const SizedBox(height: 18),
         PrimaryButton(
-          label: offer.ctaText,
+          label: marketText(locale, 'applyOffer'),
           icon: offer.openMode == OfferOpenMode.browser
               ? Icons.open_in_new_rounded
               : Icons.language_rounded,
