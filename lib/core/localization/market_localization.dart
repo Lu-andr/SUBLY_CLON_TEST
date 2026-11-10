@@ -354,6 +354,8 @@ const _dashboardTexts = <String, Map<String, String>>{
 
 const _offerTexts = <String, Map<String, String>>{
   'en': {
+    'termFact': 'Term',
+    'applyOffer': 'Apply',
     'offerSubtitle': "Compare and choose",
     'social': "Today 1558 people received a loan",
     'available': "Available offers",
@@ -367,6 +369,8 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': "Please try opening this section again later.",
   },
   'fil': {
+    'termFact': 'Termino',
+    'applyOffer': 'Mag-apply',
     'offerSubtitle': "Ihambing at pumili",
     'social': "Ngayong araw, 1558 katao ang nakatanggap ng pautang",
     'available': "Mga available na alok",
@@ -380,6 +384,8 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': "Pakisubukang buksan muli ang seksiyong ito mamaya.",
   },
   'ru': {
+    'termFact': 'Срок',
+    'applyOffer': 'Подать заявку',
     'offerSubtitle': 'Сравнивай и выбирай',
     'social': 'Сегодня 1558 человек получили займ',
     'available': 'Доступные предложения',
@@ -422,6 +428,8 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Inténtalo de nuevo más tarde.',
   },
   'uz': {
+    'termFact': 'Muddat',
+    'applyOffer': 'Ariza berish',
     'offerSubtitle': 'Solishtir va tanla',
     'social': 'Bugun 1558 kishi qarz oldi',
     'available': 'Mavjud takliflar',
@@ -436,6 +444,8 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Keyinroq qayta urinib ko‘ring.',
   },
   'kk': {
+    'termFact': 'Мерзім',
+    'applyOffer': 'Өтінім беру',
     'offerSubtitle': 'Салыстыр және таңда',
     'social': 'Бүгін 1558 адам қарыз алды',
     'available': 'Қолжетімді ұсыныстар',
@@ -450,6 +460,8 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Кейінірек қайталап көріңіз.',
   },
   'vi': {
+    'termFact': 'Thời hạn',
+    'applyOffer': 'Đăng ký',
     'offerSubtitle': 'So sánh và lựa chọn',
     'social': 'Hôm nay 1558 người đã nhận khoản vay',
     'available': 'Ưu đãi hiện có',
