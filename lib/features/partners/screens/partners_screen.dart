@@ -173,14 +173,6 @@ class _PartnersScreenState extends State<PartnersScreen> {
                 offer: entry.value,
                 locale: marketFor(market).locale,
                 onOpen: () => _openOffer(entry.value),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => _PartnerDetailScreen(
-                      offer: entry.value,
-                      locale: marketFor(market).locale,
-                    ),
-                  ),
-                ),
               ),
             ),
           ),
@@ -231,12 +223,10 @@ class _OfferCard extends StatelessWidget {
   const _OfferCard({
     required this.offer,
     required this.locale,
-    required this.onTap,
     required this.onOpen,
   });
   final PartnerOffer offer;
   final String locale;
-  final VoidCallback onTap;
   final VoidCallback onOpen;
   @override
   Widget build(BuildContext context) {
@@ -251,82 +241,78 @@ class _OfferCard extends StatelessWidget {
           (label, value),
     ];
     return AppCard(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                _OfferLogo(offer: offer),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        offer.providerName,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      if (offer.rating > 0)
-                        Text(
-                          '★ ${offer.rating.toStringAsFixed(1)}',
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            if (terms.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              Text(
-                marketText(locale, 'offerTerms'),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 4),
-              for (var i = 0; i < terms.length; i++) ...[
-                if (i > 0) const Divider(height: 1, thickness: 1),
-                _Fact(
-                  label: marketText(locale, terms[i].$1),
-                  value: terms[i].$2,
-                ),
-              ],
-            ],
-            const SizedBox(height: 18),
-            Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(16),
-              child: InkWell(
-                onTap: onOpen,
-                borderRadius: BorderRadius.circular(16),
-                child: Ink(
-                  height: 52,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF461091), Color(0xFFF020BD)],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Center(
-                    child: Text(
-                      marketText(locale, 'applyOffer'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              _OfferLogo(offer: offer),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      offer.providerName,
                       style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                       ),
+                    ),
+                    if (offer.rating > 0)
+                      Text(
+                        '★ ${offer.rating.toStringAsFixed(1)}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (terms.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(
+              marketText(locale, 'offerTerms'),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 4),
+            for (var i = 0; i < terms.length; i++) ...[
+              if (i > 0) const Divider(height: 1, thickness: 1),
+              _Fact(
+                label: marketText(locale, terms[i].$1),
+                value: terms[i].$2,
+              ),
+            ],
+          ],
+          const SizedBox(height: 18),
+          Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            child: InkWell(
+              onTap: onOpen,
+              borderRadius: BorderRadius.circular(16),
+              child: Ink(
+                height: 52,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF461091), Color(0xFFF020BD)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(
+                  child: Text(
+                    marketText(locale, 'applyOffer'),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -486,98 +472,6 @@ class _Fact extends StatelessWidget {
             textAlign: TextAlign.end,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _PartnerDetailScreen extends StatelessWidget {
-  const _PartnerDetailScreen({required this.offer, required this.locale});
-  final PartnerOffer offer;
-  final String locale;
-
-  Future<void> _open(BuildContext context) async {
-    final base = Uri.tryParse(offer.url);
-    if (base == null) return;
-    final target = await AttributionService.decorate(base);
-    if (!context.mounted) return;
-    if (offer.openMode == OfferOpenMode.webview) {
-      await Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => PartnerWebViewScreen(
-            title: offer.providerName,
-            initialUrl: target,
-          ),
-        ),
-      );
-      return;
-    }
-    var opened = false;
-    try {
-      opened = await launchUrl(target, mode: LaunchMode.externalApplication);
-      if (!opened) {
-        opened = await launchUrl(target, mode: LaunchMode.inAppBrowserView);
-      }
-    } on PlatformException {
-      opened = false;
-    } on MissingPluginException {
-      opened = false;
-    }
-    if (!opened && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Не удалось открыть предложение')),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(offer.providerName)),
-    body: ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        Center(child: _OfferLogo(offer: offer)),
-        const SizedBox(height: 18),
-        Text(
-          offer.providerName,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        if (offer.rating > 0)
-          Text(
-            '★ ${offer.rating.toStringAsFixed(1)}',
-            textAlign: TextAlign.center,
-          ),
-        const SizedBox(height: 22),
-        AppCard(
-          child: Column(
-            children: offer.parameters.entries
-                .map(
-                  (entry) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(switch (entry.key) {
-                      'amount' => marketText(locale, 'amountFact'),
-                      'processingTime' => marketText(locale, 'timeFact'),
-                      'interestRate' => marketText(locale, 'rateFact'),
-                      _ => entry.key,
-                    }),
-                    trailing: Text(
-                      entry.value,
-                      style: const TextStyle(fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-        const SizedBox(height: 18),
-        PrimaryButton(
-          label: marketText(locale, 'applyOffer'),
-          icon: offer.openMode == OfferOpenMode.browser
-              ? Icons.open_in_new_rounded
-              : Icons.language_rounded,
-          onPressed: () => _open(context),
         ),
       ],
     ),
