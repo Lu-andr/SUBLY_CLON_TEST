@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/localization/market_localization.dart';
 import '../../core/widgets/app_widgets.dart';
@@ -98,6 +99,25 @@ class _LoanSettings extends StatelessWidget {
   final AppState state;
   final MarketOption market;
 
+  static final _privacyPolicy = Uri.https(
+    'cashadvance.agency',
+    '/privacy.html',
+  );
+
+  Future<void> _openLegalPage(BuildContext context, Uri url) async {
+    try {
+      if (await launchUrl(url, mode: LaunchMode.externalApplication)) return;
+    } on PlatformException {
+      // The device could not open the URL in an external app.
+    } on MissingPluginException {
+      // No URL launcher is available on this platform.
+    }
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Unable to open this page.')));
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -194,6 +214,16 @@ class _LoanSettings extends StatelessWidget {
                   },
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          AppCard(
+            padding: EdgeInsets.zero,
+            child: ListTile(
+              leading: const Icon(Icons.privacy_tip_outlined),
+              title: const Text('Privacy Policy'),
+              trailing: const Icon(Icons.open_in_new_rounded),
+              onTap: () => _openLegalPage(context, _privacyPolicy),
             ),
           ),
         ],
