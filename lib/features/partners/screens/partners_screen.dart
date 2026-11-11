@@ -19,22 +19,7 @@ class PartnersScreen extends StatefulWidget {
 }
 
 class _PartnersScreenState extends State<PartnersScreen> {
-  late String market;
-
-  @override
-  void initState() {
-    super.initState();
-    market =
-        const {
-          'RU': 'RU',
-          'AR': 'AR',
-          'UZ': 'UZ',
-          'MX': 'MX',
-          'KZ': 'KZ',
-          'VN': 'VN',
-        }[widget.state.geoTarget.country] ??
-        'RU';
-  }
+  String get market => marketFor(widget.state.geoTarget.country).country;
 
   Future<void> _openOffer(PartnerOffer offer) async {
     final base = Uri.tryParse(offer.url);
@@ -126,7 +111,6 @@ class _PartnersScreenState extends State<PartnersScreen> {
                       value: market,
                       onChanged: (value) {
                         final option = marketFor(value);
-                        setState(() => market = value);
                         widget.state.selectMarket(
                           country: option.country,
                           locale: option.locale,
@@ -424,7 +408,7 @@ Future<void> _showOfferMarketSheet(
       ),
     ),
   );
-  if (selected != null) onChanged(selected);
+  if (context.mounted && selected != null) onChanged(selected);
 }
 
 class _OfferLogo extends StatelessWidget {

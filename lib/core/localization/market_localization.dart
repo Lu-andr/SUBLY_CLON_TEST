@@ -7,6 +7,7 @@ class MarketOption {
     required this.flag,
     required this.label,
     required this.currency,
+    required this.currencyCode,
     required this.dialCode,
     required this.minAmount,
     required this.maxAmount,
@@ -19,6 +20,7 @@ class MarketOption {
   final String flag;
   final String label;
   final String currency;
+  final String currencyCode;
   final String dialCode;
   final double minAmount;
   final double maxAmount;
@@ -35,6 +37,7 @@ const supportedMarkets = <MarketOption>[
     flag: '🇷🇺',
     label: 'Русский',
     currency: '₽',
+    currencyCode: 'RUB',
     dialCode: '7',
     minAmount: 1000,
     maxAmount: 100000,
@@ -47,6 +50,7 @@ const supportedMarkets = <MarketOption>[
     flag: '🇻🇳',
     label: 'Tiếng Việt',
     currency: '₫',
+    currencyCode: 'VND',
     dialCode: '84',
     minAmount: 500000,
     maxAmount: 30000000,
@@ -59,6 +63,7 @@ const supportedMarkets = <MarketOption>[
     flag: '🇿🇦',
     label: 'English',
     currency: 'R',
+    currencyCode: 'ZAR',
     dialCode: '27',
     minAmount: 1000,
     maxAmount: 100000,
@@ -71,6 +76,7 @@ const supportedMarkets = <MarketOption>[
     flag: '🇵🇭',
     label: 'Filipino',
     currency: '₱',
+    currencyCode: 'PHP',
     dialCode: '63',
     minAmount: 1000,
     maxAmount: 40000,
@@ -83,6 +89,7 @@ const supportedMarkets = <MarketOption>[
     flag: '🇺🇿',
     label: "O‘zbekcha",
     currency: "so‘m",
+    currencyCode: 'UZS',
     dialCode: '998',
     minAmount: 100000,
     maxAmount: 20000000,
@@ -95,6 +102,7 @@ const supportedMarkets = <MarketOption>[
     flag: '🇰🇿',
     label: 'Қазақша',
     currency: '₸',
+    currencyCode: 'KZT',
     dialCode: '7',
     minAmount: 10000,
     maxAmount: 2000000,
@@ -107,6 +115,7 @@ const supportedMarkets = <MarketOption>[
     flag: '🇦🇷',
     label: 'Español · Argentina',
     currency: r'$',
+    currencyCode: 'ARS',
     dialCode: '54',
     minAmount: 10000,
     maxAmount: 1000000,
@@ -119,6 +128,7 @@ const supportedMarkets = <MarketOption>[
     flag: '🇲🇽',
     label: 'Español · México',
     currency: r'$',
+    currencyCode: 'MXN',
     dialCode: '52',
     minAmount: 1000,
     maxAmount: 100000,
@@ -270,7 +280,8 @@ const _dashboardTexts = <String, Map<String, String>>{
     'rate': "Rate ng interes",
     'repay': "Kabuuang babayaran",
     'tips': "Mga kapaki-pakinabang na payo",
-    'tipsDesc': "Mga mungkahing makatutulong sa iyong gumawa ng tamang desisyon.",
+    'tipsDesc':
+        "Mga mungkahing makatutulong sa iyong gumawa ng tamang desisyon.",
   },
   'ru': {
     'tools': 'Полезные инструменты',
@@ -363,7 +374,8 @@ const _offerTexts = <String, Map<String, String>>{
     'rateFact': "Interest rate",
     'openApp': "Open in app",
     'openBrowser': "Open in browser",
-    'disclaimer': "Sumly is not a lender. Check the full cost and product terms on the partner website.",
+    'disclaimer':
+        "Sumly is not a lender. Check the full cost and product terms on the partner website.",
     'unavailable': "Offers are temporarily unavailable",
     'tryLater': "Please try opening this section again later.",
   },
@@ -377,7 +389,8 @@ const _offerTexts = <String, Map<String, String>>{
     'rateFact': "Rate ng interes",
     'openApp': "Buksan sa app",
     'openBrowser': "Buksan sa browser",
-    'disclaimer': "Hindi nagpapautang ang Sumly. Suriin ang kabuuang gastos at mga kondisyon ng produkto sa website ng kasosyo.",
+    'disclaimer':
+        "Hindi nagpapautang ang Sumly. Suriin ang kabuuang gastos at mga kondisyon ng produkto sa website ng kasosyo.",
     'unavailable': "Pansamantalang walang mga alok",
     'tryLater': "Pakisubukang buksan muli ang seksiyong ito mamaya.",
   },
@@ -491,4 +504,3 @@ String marketText(String locale, String key) {
       _offerTexts['ru']?[key] ??
       key;
 }
-

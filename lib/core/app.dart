@@ -12,6 +12,7 @@ import '../features/calculator/screens/calculator_screen.dart';
 import '../features/application/screens/application_flow.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/lifecycle/screens/splash_screen.dart';
+import '../features/loan_workspace/loan_workspace.dart';
 import '../features/partners/screens/partners_screen.dart';
 import '../features/settings/screens/legal_screens.dart';
 import '../features/settings/screens/settings_screen.dart';
@@ -177,8 +178,6 @@ class _ReadyAppState extends State<_ReadyApp> {
       );
     }
     if (widget.state.hasSeenOffers) {
-      // The regular user sees only the geo-targeted offer catalogue. Personal
-      // finance tabs, calculator and settings belong to the moderator branch.
       return MaterialApp(
         title: 'Sumly',
         debugShowCheckedModeBanner: false,
@@ -186,7 +185,7 @@ class _ReadyAppState extends State<_ReadyApp> {
         darkTheme: SublyTheme.dark(),
         themeMode: themeMode,
         builder: _buildWithSafeTextScale,
-        home: Scaffold(body: PartnersScreen(state: widget.state)),
+        home: LoanWorkspace(state: widget.state),
       );
     }
     return MaterialApp.router(

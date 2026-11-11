@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import '../models/subscription.dart';
 import '../models/partner_offer.dart';
@@ -52,12 +54,8 @@ class AppState extends ChangeNotifier {
         await notificationService.cancelDailyNotifications();
       }
     }
-    final offerSettings = await offerConfigService.load(
-      countryCode: geoTarget.country,
-    );
-    offers = offerSettings.resolved;
-    offersLoaded = true;
     ready = true;
+    unawaited(_loadOffers(geoTarget));
     notifyListeners();
   }
 
@@ -94,10 +92,27 @@ class AppState extends ChangeNotifier {
     required String country,
     required String locale,
   }) async {
-    geoTarget = GeoTarget(country: country, locale: locale);
+    final target = GeoTarget(country: country, locale: locale);
+    geoTarget = target;
+    offers = const [];
+    offersLoaded = false;
+    notifyListeners();
     await repository.saveMarket(country: country, locale: locale);
-    final offerSettings = await offerConfigService.load(countryCode: country);
-    offers = offerSettings.resolved;
+    if (identical(geoTarget, target)) await _loadOffers(target);
+  }
+
+  Future<void> _loadOffers(GeoTarget target) async {
+    List<PartnerOffer> resolved;
+    try {
+      final settings = await offerConfigService.load(
+        countryCode: target.country,
+      );
+      resolved = settings.resolved;
+    } on Exception {
+      resolved = const [];
+    }
+    if (!identical(geoTarget, target)) return;
+    offers = resolved;
     offersLoaded = true;
     notifyListeners();
   }
