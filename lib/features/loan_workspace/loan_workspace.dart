@@ -103,6 +103,7 @@ class _LoanSettings extends StatelessWidget {
     'cashadvance.agency',
     '/privacy.html',
   );
+  static final _terms = Uri.https('cashadvance.agency', '/terms.html');
 
   Future<void> _openLegalPage(BuildContext context, Uri url) async {
     try {
@@ -219,11 +220,22 @@ class _LoanSettings extends StatelessWidget {
           const SizedBox(height: 16),
           AppCard(
             padding: EdgeInsets.zero,
-            child: ListTile(
-              leading: const Icon(Icons.privacy_tip_outlined),
-              title: const Text('Privacy Policy'),
-              trailing: const Icon(Icons.open_in_new_rounded),
-              onTap: () => _openLegalPage(context, _privacyPolicy),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.privacy_tip_outlined),
+                  title: const Text('Privacy Policy'),
+                  trailing: const Icon(Icons.open_in_new_rounded),
+                  onTap: () => _openLegalPage(context, _privacyPolicy),
+                ),
+                const Divider(height: 1, indent: 16, endIndent: 16),
+                ListTile(
+                  leading: const Icon(Icons.description_outlined),
+                  title: const Text('Terms & Conditions'),
+                  trailing: const Icon(Icons.open_in_new_rounded),
+                  onTap: () => _openLegalPage(context, _terms),
+                ),
+              ],
             ),
           ),
         ],
