@@ -34,7 +34,18 @@ class _PartnerWebViewScreenState extends State<PartnerWebViewScreen> {
     appBar: AppBar(title: Text(widget.title)),
     body: Column(
       children: [
-        if (progress < 100) LinearProgressIndicator(value: progress / 100),
+        if (progress < 100)
+          ShaderMask(
+            blendMode: BlendMode.srcIn,
+            shaderCallback: const LinearGradient(
+              colors: [Color(0xFF461091), Color(0xFFF020BD)],
+            ).createShader,
+            child: LinearProgressIndicator(
+              value: progress / 100,
+              color: Colors.white,
+              backgroundColor: Colors.transparent,
+            ),
+          ),
         Expanded(child: WebViewWidget(controller: controller)),
       ],
     ),
