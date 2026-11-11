@@ -354,6 +354,7 @@ const _dashboardTexts = <String, Map<String, String>>{
 
 const _offerTexts = <String, Map<String, String>>{
   'en': {
+    'offerTerms': 'Terms',
     'termFact': 'Term',
     'applyOffer': 'Apply',
     'offerSubtitle': "Compare and choose",
@@ -367,6 +368,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': "Please try opening this section again later.",
   },
   'fil': {
+    'offerTerms': 'Mga kondisyon',
     'termFact': 'Termino',
     'applyOffer': 'Mag-apply',
     'offerSubtitle': "Ihambing at pumili",
@@ -380,6 +382,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': "Pakisubukang buksan muli ang seksiyong ito mamaya.",
   },
   'ru': {
+    'offerTerms': 'Условия',
     'termFact': 'Срок',
     'applyOffer': 'Подать заявку',
     'offerSubtitle': 'Сравнивай и выбирай',
@@ -394,6 +397,9 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Попробуйте открыть этот раздел позже.',
   },
   'es-ar': {
+    'offerTerms': 'Condiciones',
+    'termFact': 'Plazo',
+    'applyOffer': 'Solicitar',
     'offerSubtitle': 'Compará y elegí',
     'amountFact': 'Monto',
     'timeFact': 'Tiempo de revisión',
@@ -406,6 +412,9 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Inténtalo de nuevo más tarde.',
   },
   'es-mx': {
+    'offerTerms': 'Condiciones',
+    'termFact': 'Plazo',
+    'applyOffer': 'Solicitar',
     'offerSubtitle': 'Compara y elige',
     'amountFact': 'Monto',
     'timeFact': 'Tiempo de revisión',
@@ -418,6 +427,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Inténtalo de nuevo más tarde.',
   },
   'uz': {
+    'offerTerms': 'Shartlar',
     'termFact': 'Muddat',
     'applyOffer': 'Ariza berish',
     'offerSubtitle': 'Solishtir va tanla',
@@ -432,6 +442,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Keyinroq qayta urinib ko‘ring.',
   },
   'kk': {
+    'offerTerms': 'Шарттар',
     'termFact': 'Мерзім',
     'applyOffer': 'Өтінім беру',
     'offerSubtitle': 'Салыстыр және таңда',
@@ -446,6 +457,7 @@ const _offerTexts = <String, Map<String, String>>{
     'tryLater': 'Кейінірек қайталап көріңіз.',
   },
   'vi': {
+    'offerTerms': 'Điều kiện',
     'termFact': 'Thời hạn',
     'applyOffer': 'Đăng ký',
     'offerSubtitle': 'So sánh và lựa chọn',
