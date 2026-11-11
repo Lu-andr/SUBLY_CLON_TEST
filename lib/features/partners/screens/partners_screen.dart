@@ -155,32 +155,7 @@ class _PartnersScreenState extends State<PartnersScreen> {
           ],
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-          decoration: BoxDecoration(
-            color: SublyColors.green.withValues(alpha: .10),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.people_alt_rounded, color: SublyColors.green),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(marketText(marketFor(market).locale, 'social')),
-              ),
-            ],
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
-        child: Text(
-          '${marketText(marketFor(market).locale, 'available')} · ${widget.state.offers.length}',
-          style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
-        ),
-      ),
+      const SizedBox(height: 18),
       if (!widget.state.offersLoaded)
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 80),
