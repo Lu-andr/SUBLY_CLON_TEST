@@ -100,10 +100,13 @@ class _LoanSettings extends StatelessWidget {
   final MarketOption market;
 
   static final _privacyPolicy = Uri.https(
-    'cashadvance.agency',
-    '/privacy.html',
+    'www.freeprivacypolicy.com',
+    '/live/22dbbc93-0634-445c-a2fd-7fe663f7c32b',
   );
-  static final _terms = Uri.https('cashadvance.agency', '/terms.html');
+  static final _terms = Uri.https(
+    'www.freeprivacypolicy.com',
+    '/live/33fad1b8-dc02-4459-85b2-567f49cdf161',
+  );
 
   Future<void> _openLegalPage(BuildContext context, Uri url) async {
     try {
