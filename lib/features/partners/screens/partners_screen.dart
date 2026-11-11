@@ -239,88 +239,97 @@ class _OfferCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onOpen;
   @override
-  Widget build(BuildContext context) => AppCard(
-    child: InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _OfferLogo(offer: offer),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      offer.providerName,
+  Widget build(BuildContext context) {
+    final terms = <(String, String)>[
+      for (final (field, label) in const [
+        ('amount', 'amountFact'),
+        ('term', 'termFact'),
+        ('interestRate', 'rateFact'),
+      ])
+        if (offer.parameters[field]?.trim() case final String value
+            when value.isNotEmpty)
+          (label, value),
+    ];
+    return AppCard(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _OfferLogo(offer: offer),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        offer.providerName,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      if (offer.rating > 0)
+                        Text(
+                          '★ ${offer.rating.toStringAsFixed(1)}',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (terms.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Text(
+                marketText(locale, 'offerTerms'),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 4),
+              for (var i = 0; i < terms.length; i++) ...[
+                if (i > 0) const Divider(height: 1, thickness: 1),
+                _Fact(
+                  label: marketText(locale, terms[i].$1),
+                  value: terms[i].$2,
+                ),
+              ],
+            ],
+            const SizedBox(height: 18),
+            Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(16),
+              child: InkWell(
+                onTap: onOpen,
+                borderRadius: BorderRadius.circular(16),
+                child: Ink(
+                  height: 52,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF461091), Color(0xFFF020BD)],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(
+                    child: Text(
+                      marketText(locale, 'applyOffer'),
                       style: const TextStyle(
-                        fontSize: 18,
+                        color: Colors.white,
                         fontWeight: FontWeight.w800,
+                        fontSize: 16,
                       ),
                     ),
-                    if (offer.rating > 0)
-                      Text('★ ${offer.rating.toStringAsFixed(1)}'),
-                  ],
+                  ),
                 ),
               ),
-            ],
-          ),
-          if (offer.parameters.isNotEmpty) ...[
-            const SizedBox(height: 18),
-            Wrap(
-              spacing: 18,
-              runSpacing: 12,
-              children: offer.parameters.entries
-                  .take(3)
-                  .map(
-                    (entry) => _Fact(
-                      label: switch (entry.key) {
-                        'amount' => marketText(locale, 'amountFact'),
-                        'processingTime' => marketText(locale, 'termFact'),
-                        'interestRate' => marketText(locale, 'rateFact'),
-                        _ => entry.key,
-                      },
-                      value: entry.value,
-                    ),
-                  )
-                  .toList(),
             ),
           ],
-          const SizedBox(height: 18),
-          Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
-            child: InkWell(
-              onTap: onOpen,
-              borderRadius: BorderRadius.circular(16),
-              child: Ink(
-                height: 52,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF461091), Color(0xFFF020BD)],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Center(
-                  child: Text(
-                    marketText(locale, 'applyOffer'),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _OfferMarketMenu extends StatelessWidget {
@@ -461,15 +470,23 @@ class _Fact extends StatelessWidget {
   const _Fact({required this.label, required this.value});
   final String label;
   final String value;
+
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: 92,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 9),
+    child: Row(
       children: [
-        Text(label, style: Theme.of(context).textTheme.bodySmall),
-        const SizedBox(height: 4),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.w800)),
+        Expanded(
+          child: Text(label, style: const TextStyle(fontSize: 16)),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+        ),
       ],
     ),
   );
