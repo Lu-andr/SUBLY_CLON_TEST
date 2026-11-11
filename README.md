@@ -60,6 +60,13 @@ cd sample
 flutter run
 ```
 
+The Android offer screen uses Hybrid Composition. To compare it with the
+previous rendering mode, build from `sample` with:
+
+```sh
+flutter build apk --release --dart-define=OFFER_WEBVIEW_HYBRID_COMPOSITION=false
+```
+
 The sample host targets Android and iOS. All app data is stored locally with
 `shared_preferences`; there is no account, backend, advertising, analytics, or
 sensitive runtime permission.

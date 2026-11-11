@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+
+const _useAndroidHybridComposition = bool.fromEnvironment(
+  'OFFER_WEBVIEW_HYBRID_COMPOSITION',
+  defaultValue: true,
+);
 
 class PartnerWebViewScreen extends StatefulWidget {
   const PartnerWebViewScreen({
@@ -29,6 +35,19 @@ class _PartnerWebViewScreenState extends State<PartnerWebViewScreen> {
       ..loadRequest(widget.initialUrl);
   }
 
+  Widget _buildWebView() {
+    final platform = controller.platform;
+    if (!_useAndroidHybridComposition ||
+        platform is! AndroidWebViewController) {
+      return WebViewWidget(controller: controller);
+    }
+    final params = AndroidWebViewWidgetCreationParams(
+      controller: platform,
+      displayWithHybridComposition: true,
+    );
+    return WebViewWidget.fromPlatformCreationParams(params: params);
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: Text(widget.title)),
@@ -46,7 +65,7 @@ class _PartnerWebViewScreenState extends State<PartnerWebViewScreen> {
               backgroundColor: Colors.transparent,
             ),
           ),
-        Expanded(child: WebViewWidget(controller: controller)),
+        Expanded(child: _buildWebView()),
       ],
     ),
   );
