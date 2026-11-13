@@ -1,9 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'animations/app_animations.dart';
 import '../core/theme/app_theme.dart';
 import '../data/providers/app_state.dart';
@@ -17,7 +19,8 @@ import '../features/partners/screens/partners_screen.dart';
 import '../features/settings/screens/legal_screens.dart';
 import '../features/settings/screens/settings_screen.dart';
 import '../features/subscriptions/screens/subscription_detail_screen.dart';
-import '../features/subscriptions/screens/subscriptions_screen.dart';
+import '../features/finance/finance_screen.dart';
+import 'localization/market_localization.dart';
 import 'services/offer_config_service.dart';
 
 Widget _buildWithSafeTextScale(BuildContext context, Widget? child) {
@@ -233,9 +236,9 @@ class _MainShellState extends State<MainShell> {
               onViewAll: () => setState(() => index = 1),
               onOpenSubscription: widget.onOpenSubscription,
             ),
-      SubscriptionsScreen(
+      FinanceScreen(
         state: widget.state,
-        onOpenSubscription: widget.onOpenSubscription,
+        market: marketFor(widget.state.geoTarget.country),
       ),
       const CalculatorScreen(),
       SettingsScreen(
@@ -258,6 +261,7 @@ class _MainShellState extends State<MainShell> {
       bottomNavigationBar: _SublyBottomBar(
         index: index,
         hasPartners: hasPartners,
+        financeLabel: financeMenu(marketFor(widget.state.geoTarget.country)),
         onChanged: (value) {
           HapticFeedback.selectionClick();
           setState(() => index = value);
@@ -271,10 +275,12 @@ class _SublyBottomBar extends StatelessWidget {
   const _SublyBottomBar({
     required this.index,
     required this.hasPartners,
+    required this.financeLabel,
     required this.onChanged,
   });
   final int index;
   final bool hasPartners;
+  final String financeLabel;
   final ValueChanged<int> onChanged;
 
   @override
@@ -284,7 +290,7 @@ class _SublyBottomBar extends StatelessWidget {
         hasPartners ? Icons.handshake_rounded : Icons.home_rounded,
         hasPartners ? 'Партнёры' : 'Главная',
       ),
-      (Icons.autorenew_rounded, 'Подписки'),
+      (Icons.account_balance_wallet_rounded, financeLabel),
       (Icons.calculate_rounded, 'Расчёты'),
       (Icons.tune_rounded, 'Настройки'),
     ];
@@ -295,9 +301,8 @@ class _SublyBottomBar extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface.withValues(alpha: .96),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
-            color: Theme.of(
-              context,
-            ).colorScheme.outlineVariant.withValues(alpha: .45),
+            color: Theme.of(context).colorScheme.outlineVariant
+                .withValues(alpha: .45),
           ),
           boxShadow: const [
             BoxShadow(
@@ -349,9 +354,9 @@ class _SublyBottomBar extends StatelessWidget {
                             items[itemIndex].$1,
                             color: selected
                                 ? Colors.white
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                                : Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                             size: 23,
                           ),
                         ),
@@ -361,9 +366,9 @@ class _SublyBottomBar extends StatelessWidget {
                           style: TextStyle(
                             color: selected
                                 ? Colors.white
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                                : Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                             fontSize: 10,
                             fontWeight: selected
                                 ? FontWeight.w700

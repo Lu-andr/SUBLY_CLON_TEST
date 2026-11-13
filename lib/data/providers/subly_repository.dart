@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/subscription.dart';
+import '../models/finance.dart';
 
 class SublyRepository {
   SublyRepository(this._preferences);
+  static const _financeKey = 'subly.finance.v1';
   static const _subscriptionsKey = 'subly.subscriptions.v1';
   static const _settingsKey = 'subly.settings.v1';
   static const _onboardingKey = 'subly.onboarding.complete.v1';
@@ -14,6 +17,50 @@ class SublyRepository {
   static const _marketCountryKey = 'subly.market.country.v1';
   static const _marketLocaleKey = 'subly.market.locale.v1';
   final SharedPreferences _preferences;
+
+  Future<FinanceData> loadFinance() async {
+    final raw = _preferences.getString(_financeKey);
+    if (raw != null) {
+      try {
+        return FinanceData.fromJson(
+          Map<String, dynamic>.from(jsonDecode(raw) as Map),
+        );
+      } on FormatException {
+        return const FinanceData();
+      } on TypeError {
+        return const FinanceData();
+      } on ArgumentError {
+        return const FinanceData();
+      }
+    }
+    final previous = _preferences.getString(_subscriptionsKey);
+    if (previous == null) return const FinanceData();
+    try {
+      final items = (jsonDecode(previous) as List).map(
+        (item) => Subscription.fromJson(Map<String, Object?>.from(item as Map)),
+      );
+      return FinanceData(
+        subscriptions: items
+            .where(
+              (item) => !const {
+                'netflix',
+                'spotify',
+                'icloud',
+                'youtube',
+              }.contains(item.id),
+            )
+            .toList(),
+      );
+    } on Object {
+      return const FinanceData();
+    }
+  }
+
+  Future<void> saveFinance(FinanceData data) async {
+    if (!await _preferences.setString(_financeKey, jsonEncode(data.toJson()))) {
+      throw StateError('Could not save finances');
+    }
+  }
 
   Future<List<Subscription>> loadSubscriptions() async {
     final raw = _preferences.getString(_subscriptionsKey);
@@ -105,6 +152,7 @@ class SublyRepository {
   }
 
   Future<void> clearData() async {
+    await _preferences.remove(_financeKey);
     await _preferences.remove(_subscriptionsKey);
     await _preferences.remove(_settingsKey);
     await _preferences.remove(_applicationKey);

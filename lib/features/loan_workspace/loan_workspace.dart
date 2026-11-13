@@ -7,6 +7,7 @@ import '../../core/widgets/app_widgets.dart';
 import '../../data/providers/app_state.dart';
 import '../calculator/screens/loan_calculator_screen.dart';
 import '../partners/screens/partners_screen.dart';
+import '../finance/finance_screen.dart';
 import 'loan_workspace_text.dart';
 
 class LoanWorkspace extends StatefulWidget {
@@ -33,6 +34,7 @@ class _LoanWorkspaceState extends State<LoanWorkspace> {
       final pages = [
         LoanCalculatorScreen(key: ValueKey(market.country), market: market),
         PartnersScreen(state: widget.state),
+        FinanceScreen(state: widget.state, market: market),
         _LoanSettings(state: widget.state, market: market),
       ];
       return Scaffold(
@@ -79,6 +81,11 @@ class _LoanWorkspaceState extends State<LoanWorkspace> {
                 icon: const Icon(Icons.local_offer_outlined),
                 selectedIcon: const Icon(Icons.local_offer_rounded),
                 label: LoanText.offers.inMarket(market),
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.account_balance_wallet_outlined),
+                selectedIcon: const Icon(Icons.account_balance_wallet_rounded),
+                label: financeMenu(market),
               ),
               NavigationDestination(
                 icon: const Icon(Icons.settings_outlined),

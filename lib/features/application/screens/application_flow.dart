@@ -11,6 +11,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/animations/app_animations.dart';
 import '../../../core/localization/market_localization.dart';
 import '../../../data/providers/app_state.dart';
+import '../../finance/finance_screen.dart';
 
 enum _ApplicationStep { form, confirmation, processing, waiting }
 
@@ -541,9 +542,8 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                         ),
                         const SizedBox(width: 8),
                         _MarketMenu(
-                          value: marketFor(
-                            widget.state.geoTarget.country,
-                          ).country,
+                          value: marketFor(widget.state.geoTarget.country)
+                              .country,
                           onChanged: (country) {
                             final option = marketFor(country);
                             widget.state.selectMarket(
@@ -559,7 +559,10 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                     ),
                     const Spacer(),
                     Text(
-                      marketText(marketFor(widget.state.geoTarget.country).locale, 'title'),
+                      marketText(
+                        marketFor(widget.state.geoTarget.country).locale,
+                        'title',
+                      ),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 30,
@@ -583,7 +586,10 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                 child: _AmountSlider(
                   value: selectedAmount,
                   market: marketFor(widget.state.geoTarget.country),
-                  label: marketText(marketFor(widget.state.geoTarget.country).locale, 'amount'),
+                  label: marketText(
+                    marketFor(widget.state.geoTarget.country).locale,
+                    'amount',
+                  ),
                   onChanged: (value) => setState(() => selectedAmount = value),
                 ),
               ),
@@ -594,7 +600,10 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      marketText(marketFor(widget.state.geoTarget.country).locale, 'name'),
+                      marketText(
+                        marketFor(widget.state.geoTarget.country).locale,
+                        'name',
+                      ),
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 8),
@@ -624,7 +633,10 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      marketText(marketFor(widget.state.geoTarget.country).locale, 'phone'),
+                      marketText(
+                        marketFor(widget.state.geoTarget.country).locale,
+                        'phone',
+                      ),
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 8),
@@ -644,9 +656,8 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                                 marketFor(phoneMarketCountry),
                               ) ==
                               null;
-                          final countryCode = phoneCountryFor(
-                            value,
-                          )?.countryCode;
+                          final countryCode = phoneCountryFor(value)
+                              ?.countryCode;
                           if (valid != phoneIsValid ||
                               countryCode != phoneCountryCode) {
                             setState(() {
@@ -695,7 +706,10 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  marketText(marketFor(widget.state.geoTarget.country).locale, 'consent'),
+                  marketText(
+                    marketFor(widget.state.geoTarget.country).locale,
+                    'consent',
+                  ),
                   style: const TextStyle(fontSize: 13),
                 ),
               ),
@@ -704,8 +718,25 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                 delay: const Duration(milliseconds: 300),
                 child: _GradientSubmitButton(
                   loading: submitting,
-                  label: marketText(marketFor(widget.state.geoTarget.country).locale, 'submit'),
+                  label: marketText(
+                    marketFor(widget.state.geoTarget.country).locale,
+                    'submit',
+                  ),
                   onPressed: submitting ? null : submit,
+                ),
+              ),
+              TextButton.icon(
+                onPressed: submitting
+                    ? null
+                    : () {
+                        final market = marketFor(
+                          widget.state.geoTarget.country,
+                        );
+                        openFinances(context, widget.state, market);
+                      },
+                icon: const Icon(Icons.account_balance_wallet_outlined),
+                label: Text(
+                  financeMenu(marketFor(widget.state.geoTarget.country)),
                 ),
               ),
               const SizedBox(height: 18),
@@ -719,7 +750,10 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    marketText(marketFor(widget.state.geoTarget.country).locale, 'secure'),
+                    marketText(
+                      marketFor(widget.state.geoTarget.country).locale,
+                      'secure',
+                    ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
@@ -1025,6 +1059,15 @@ class _ModeratorWaitingScreenState extends State<ModeratorWaitingScreen> {
                 text: marketText(marketOption.locale, 'tipsDesc'),
               ),
             ),
+            if (widget.state case final state?)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: OutlinedButton.icon(
+                  onPressed: () => openFinances(context, state, marketOption),
+                  icon: const Icon(Icons.account_balance_wallet_outlined),
+                  label: Text(financeMenu(marketOption)),
+                ),
+              ),
             const SizedBox(height: 36),
           ],
         ),
@@ -1743,9 +1786,8 @@ class _CenteredStep extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+            style: Theme.of(context).textTheme.headlineSmall
+                ?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 10),
           Text(description, textAlign: TextAlign.center),

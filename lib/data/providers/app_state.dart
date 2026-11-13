@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+
 import '../models/subscription.dart';
+import '../models/finance.dart';
 import '../models/partner_offer.dart';
 import '../../core/services/offer_config_service.dart';
 import '../../core/services/application_notification_service.dart';
@@ -18,7 +20,9 @@ class AppState extends ChangeNotifier {
   final SublyRepository repository;
   final OfferConfigService offerConfigService;
   final ApplicationNotificationService notificationService;
-  List<Subscription> subscriptions = const [];
+  FinanceData finance = const FinanceData();
+  List<Subscription> get subscriptions => finance.subscriptions;
+  Future<void> _financeWrites = Future<void>.value();
   SublySettings settings = const SublySettings();
   bool ready = false;
   bool showOnboarding = false;
@@ -31,7 +35,7 @@ class AppState extends ChangeNotifier {
   GeoTarget geoTarget = const GeoTarget();
 
   Future<void> initialize() async {
-    subscriptions = await repository.loadSubscriptions();
+    finance = await repository.loadFinance();
     settings = await repository.loadSettings();
     showOnboarding = !repository.onboardingComplete;
     application = repository.loadApplication();
@@ -129,52 +133,89 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addSubscription(Subscription value) async {
-    subscriptions = [...subscriptions, value];
-    await repository.saveSubscriptions(subscriptions);
-    notifyListeners();
+  Future<void> updateFinance(FinanceData Function(FinanceData) change) {
+    final write = _financeWrites.then((_) async {
+      final updated = change(finance);
+      if (identical(updated, finance)) return;
+      await repository.saveFinance(updated);
+      finance = updated;
+      notifyListeners();
+    });
+    _financeWrites = write.then<void>((_) {}, onError: (Object _) {});
+    return write;
   }
 
-  Future<void> updateSubscription(Subscription value) async {
-    subscriptions = subscriptions
-        .map((item) => item.id == value.id ? value : item)
-        .toList();
-    await repository.saveSubscriptions(subscriptions);
-    notifyListeners();
-  }
+  Future<void> addSubscription(Subscription value) => updateFinance(
+    (data) => data.copyWith(subscriptions: [...data.subscriptions, value]),
+  );
 
-  Future<void> deleteSubscription(String id) async {
-    subscriptions = subscriptions.where((item) => item.id != id).toList();
-    await repository.saveSubscriptions(subscriptions);
-    notifyListeners();
-  }
+  Future<void> updateSubscription(Subscription value) => updateFinance(
+    (data) => data.copyWith(
+      subscriptions: [
+        for (final item in data.subscriptions)
+          if (item.id == value.id) value else item,
+      ],
+    ),
+  );
 
-  Future<void> toggleStatus(String id) async {
-    subscriptions = subscriptions.map((item) {
-      if (item.id != id) return item;
-      final status = item.status == SubscriptionStatus.active
-          ? SubscriptionStatus.paused
-          : SubscriptionStatus.active;
-      return item.copyWith(status: status);
-    }).toList();
-    await repository.saveSubscriptions(subscriptions);
-    notifyListeners();
-  }
+  Future<void> deleteSubscription(String id) => updateFinance(
+    (data) => data.copyWith(
+      subscriptions: [
+        for (final item in data.subscriptions)
+          if (item.id != id) item,
+      ],
+    ),
+  );
 
-  Future<void> markPaid(String id) async {
-    subscriptions = subscriptions.map((item) {
-      if (item.id != id) return item;
-      return item.copyWith(
-        nextPayment: DateTime(
-          item.nextPayment.year,
-          item.nextPayment.month + 1,
-          item.nextPayment.day,
-        ),
-      );
-    }).toList();
-    await repository.saveSubscriptions(subscriptions);
-    notifyListeners();
-  }
+  Future<void> toggleStatus(String id) => updateFinance(
+    (data) => data.copyWith(
+      subscriptions: [
+        for (final item in data.subscriptions)
+          if (item.id != id)
+            item
+          else
+            item.copyWith(
+              status: item.status == SubscriptionStatus.active
+                  ? SubscriptionStatus.paused
+                  : SubscriptionStatus.active,
+            ),
+      ],
+    ),
+  );
+
+  Future<void> markPaid(String id, {DateTime? expectedDue, DateTime? paidOn}) =>
+      updateFinance((data) {
+        final item = data.subscriptions
+            .where((item) => item.id == id)
+            .firstOrNull;
+        if (item == null ||
+            item.status != SubscriptionStatus.active ||
+            (expectedDue != null && item.nextPayment != expectedDue)) {
+          return data;
+        }
+        final paid = FinanceEntry(
+          id: 'subscription:$id:${item.nextPayment.toIso8601String()}',
+          title: item.name,
+          cents: (item.price * 100).round(),
+          currency: item.currency,
+          date: paidOn ?? DateTime.now(),
+          kind: FinanceKind.subscription,
+          category: item.category,
+        );
+        return data.copyWith(
+          entries: [...data.entries, paid],
+          subscriptions: [
+            for (final current in data.subscriptions)
+              if (current.id != id)
+                current
+              else
+                current.copyWith(
+                  nextPayment: nextBillingDate(item.nextPayment, item.period),
+                  totalSpent: item.totalSpent + item.price,
+                ),
+          ],
+        );
+      });
 
   void updateBalance(double delta) {
     balance += delta;
@@ -187,10 +228,14 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> clearData() async {
-    await repository.clearData();
-    subscriptions = const [];
-    settings = const SublySettings();
-    notifyListeners();
+  Future<void> clearData() {
+    final write = _financeWrites.then((_) async {
+      await repository.clearData();
+      finance = const FinanceData();
+      settings = const SublySettings();
+      notifyListeners();
+    });
+    _financeWrites = write.then<void>((_) {}, onError: (Object _) {});
+    return write;
   }
 }

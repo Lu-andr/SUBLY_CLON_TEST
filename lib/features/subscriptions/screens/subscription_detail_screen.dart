@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../data/models/subscription.dart';
@@ -89,9 +90,8 @@ class SubscriptionDetailScreen extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(
                   subscription.name,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: Theme.of(context).textTheme.headlineSmall
+                      ?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 6),
                 Chip(
@@ -119,9 +119,8 @@ class SubscriptionDetailScreen extends StatelessWidget {
                     Expanded(
                       child: _Info(
                         label: 'Следующий платёж',
-                        value: DateFormat(
-                          'dd.MM',
-                        ).format(subscription.nextPayment),
+                        value: DateFormat('dd.MM')
+                            .format(subscription.nextPayment),
                       ),
                     ),
                   ],
@@ -219,7 +218,7 @@ class SubscriptionDetailScreen extends StatelessWidget {
             label: 'Отметить оплаченным',
             icon: Icons.check_rounded,
             onPressed: () async {
-              await state.markPaid(id);
+              await state.markPaid(id, expectedDue: subscription.nextPayment);
               if (context.mounted) {
                 ScaffoldMessenger.of(
                   context,
