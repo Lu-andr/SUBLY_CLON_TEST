@@ -11,9 +11,14 @@ import '../finance/finance_screen.dart';
 import 'loan_workspace_text.dart';
 
 class LoanWorkspace extends StatefulWidget {
-  const LoanWorkspace({required this.state, super.key});
+  const LoanWorkspace({
+    required this.state,
+    this.showFinance = false,
+    super.key,
+  });
 
   final AppState state;
+  final bool showFinance;
 
   @override
   State<LoanWorkspace> createState() => _LoanWorkspaceState();
@@ -31,18 +36,46 @@ class _LoanWorkspaceState extends State<LoanWorkspace> {
       final accent = theme.brightness == Brightness.dark
           ? LoanCalculatorScreen.brandFuchsia
           : LoanCalculatorScreen.brandPurple;
+
       final pages = [
         LoanCalculatorScreen(key: ValueKey(market.country), market: market),
         PartnersScreen(state: widget.state),
-        FinanceScreen(state: widget.state, market: market),
+        if (widget.showFinance) FinanceScreen(state: widget.state, market: market),
         _LoanSettings(state: widget.state, market: market),
       ];
+
+      final destinations = [
+        NavigationDestination(
+          icon: const Icon(Icons.calculate_outlined),
+          selectedIcon: const Icon(Icons.calculate_rounded),
+          label: LoanText.calculator.inMarket(market),
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.local_offer_outlined),
+          selectedIcon: const Icon(Icons.local_offer_rounded),
+          label: LoanText.offers.inMarket(market),
+        ),
+        if (widget.showFinance)
+          NavigationDestination(
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: const Icon(Icons.account_balance_wallet_rounded),
+            label: financeMenu(market),
+          ),
+        NavigationDestination(
+          icon: const Icon(Icons.settings_outlined),
+          selectedIcon: const Icon(Icons.settings_rounded),
+          label: LoanText.settings.inMarket(market),
+        ),
+      ];
+
+      final safeIndex = _index >= pages.length ? 0 : _index;
+
       return Scaffold(
         body: IndexedStack(
-          index: _index,
+          index: safeIndex,
           children: [
             for (final (index, page) in pages.indexed)
-              TickerMode(enabled: _index == index, child: page),
+              TickerMode(enabled: safeIndex == index, child: page),
           ],
         ),
         bottomNavigationBar: NavigationBarTheme(
@@ -66,33 +99,12 @@ class _LoanWorkspaceState extends State<LoanWorkspace> {
             ),
           ),
           child: NavigationBar(
-            selectedIndex: _index,
+            selectedIndex: safeIndex,
             onDestinationSelected: (index) {
               HapticFeedback.selectionClick();
               setState(() => _index = index);
             },
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.calculate_outlined),
-                selectedIcon: const Icon(Icons.calculate_rounded),
-                label: LoanText.calculator.inMarket(market),
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.local_offer_outlined),
-                selectedIcon: const Icon(Icons.local_offer_rounded),
-                label: LoanText.offers.inMarket(market),
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.account_balance_wallet_outlined),
-                selectedIcon: const Icon(Icons.account_balance_wallet_rounded),
-                label: financeMenu(market),
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.settings_outlined),
-                selectedIcon: const Icon(Icons.settings_rounded),
-                label: LoanText.settings.inMarket(market),
-              ),
-            ],
+            destinations: destinations,
           ),
         ),
       );
