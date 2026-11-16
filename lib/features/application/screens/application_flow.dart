@@ -170,6 +170,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
   late double selectedAmount;
   bool consent = false;
   late String phoneMarketCountry;
+  Timer? _verificationTimer;
   Timer? timer;
 
   @override
@@ -185,6 +186,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _verificationTimer?.cancel();
     timer?.cancel();
     nameController.dispose();
     phoneController.dispose();
@@ -233,10 +235,32 @@ class _ApplicationFlowState extends State<ApplicationFlow>
   }
 
   Future<void> _autofillVerificationCode() async {
+    final previousInput = confirmationController.text;
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    if (!mounted || step != _ApplicationStep.confirmation) return;
+    if (!mounted ||
+        step != _ApplicationStep.confirmation ||
+        confirmationController.text != previousInput ||
+        _verificationTimer?.isActive == true) {
+      return;
+    }
     confirmationController.text = code;
-    _verifyCode();
+    _onVerificationInput(code);
+  }
+
+  void _onVerificationInput(String value) {
+    if (step != _ApplicationStep.confirmation) return;
+    _verificationTimer?.cancel();
+    setState(() => confirmationError = null);
+    if (value.length != 4) return;
+
+    _verificationTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted ||
+          step != _ApplicationStep.confirmation ||
+          confirmationController.text != value) {
+        return;
+      }
+      _verifyCode();
+    });
   }
 
   Future<void> _resendCode() async {
@@ -365,14 +389,7 @@ class _ApplicationFlowState extends State<ApplicationFlow>
                 _OtpBoxes(
                   controller: confirmationController,
                   hasError: confirmationError != null,
-                  onChanged: (value) {
-                    if (value.length < 4 && confirmationError != null) {
-                      setState(() => confirmationError = null);
-                    } else {
-                      setState(() {});
-                    }
-                    if (value.length == 4) _verifyCode();
-                  },
+                  onChanged: _onVerificationInput,
                 ),
                 AnimatedSize(
                   duration: const Duration(milliseconds: 220),
@@ -1036,6 +1053,21 @@ class _ModeratorWaitingScreenState extends State<ModeratorWaitingScreen> {
                         ],
                       ),
                     ),
+                    if (widget.state case final state?)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: () =>
+                                openFinances(context, state, marketOption),
+                            icon: const Icon(
+                              Icons.account_balance_wallet_outlined,
+                            ),
+                            label: Text(financeMenu(marketOption)),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -1059,15 +1091,6 @@ class _ModeratorWaitingScreenState extends State<ModeratorWaitingScreen> {
                 text: marketText(marketOption.locale, 'tipsDesc'),
               ),
             ),
-            if (widget.state case final state?)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: OutlinedButton.icon(
-                  onPressed: () => openFinances(context, state, marketOption),
-                  icon: const Icon(Icons.account_balance_wallet_outlined),
-                  label: Text(financeMenu(marketOption)),
-                ),
-              ),
             const SizedBox(height: 36),
           ],
         ),
