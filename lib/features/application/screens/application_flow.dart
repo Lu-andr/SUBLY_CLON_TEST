@@ -11,6 +11,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/animations/app_animations.dart';
 import '../../../core/localization/market_localization.dart';
 import '../../../data/providers/app_state.dart';
+import '../../calculator/screens/loan_calculator_screen.dart';
 import '../../finance/finance_screen.dart';
 
 enum _ApplicationStep { form, confirmation, processing, waiting }
@@ -856,6 +857,22 @@ class _ModeratorWaitingScreenState extends State<ModeratorWaitingScreen> {
     debugPaintPointersEnabled = false;
 
     final colors = Theme.of(context).colorScheme;
+    final cardTitleStyle = TextStyle(
+      color: colors.onSurface,
+      fontSize: 17,
+      fontWeight: FontWeight.w800,
+    );
+    final cardDecoration = BoxDecoration(
+      color: colors.surface,
+      borderRadius: BorderRadius.circular(26),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x130F2A1B),
+          blurRadius: 28,
+          offset: Offset(0, 12),
+        ),
+      ],
+    );
     final marketOption = marketFor(market);
     final application = widget.state?.application;
     final amount = application?['amount'];
@@ -972,17 +989,7 @@ class _ModeratorWaitingScreenState extends State<ModeratorWaitingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
                 padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(26),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x130F2A1B),
-                      blurRadius: 28,
-                      offset: Offset(0, 12),
-                    ),
-                  ],
-                ),
+                decoration: cardDecoration,
                 child: Column(
                   children: [
                     Row(
@@ -1006,11 +1013,7 @@ class _ModeratorWaitingScreenState extends State<ModeratorWaitingScreen> {
                             children: [
                               Text(
                                 '${marketText(marketOption.locale, 'application')} $amountText',
-                                style: TextStyle(
-                                  color: colors.onSurface,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                                style: cardTitleStyle,
                               ),
                               const SizedBox(height: 3),
                               Text(
@@ -1053,25 +1056,43 @@ class _ModeratorWaitingScreenState extends State<ModeratorWaitingScreen> {
                         ],
                       ),
                     ),
-                    if (widget.state case final state?)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: () =>
-                                openFinances(context, state, marketOption),
-                            icon: const Icon(
-                              Icons.account_balance_wallet_outlined,
-                            ),
-                            label: Text(financeMenu(marketOption)),
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
             ),
+            if (widget.state case final state?) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: DecoratedBox(
+                  decoration: cardDecoration,
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(26),
+                    clipBehavior: Clip.antiAlias,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      leading: const Icon(
+                        Icons.account_balance_wallet_outlined,
+                        color: LoanCalculatorScreen.brandPurple,
+                      ),
+                      title: Text(
+                        financeMenu(marketOption),
+                        style: cardTitleStyle,
+                      ),
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: LoanCalculatorScreen.brandPurple,
+                      ),
+                      onTap: () => openFinances(context, state, marketOption),
+                    ),
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -1260,135 +1281,143 @@ class _InlineCalculatorState extends State<_InlineCalculator> {
   double get total => amount + amount * annualRate / 100 * days / 365;
 
   @override
-  Widget build(BuildContext context) => FadeSlideIn(
-    delay: const Duration(milliseconds: 120),
-    child: Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(28),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x140C1020),
-            blurRadius: 24,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFA7D95F), Color(0xFF21A864)],
-                  ),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(Icons.calculate_rounded, color: Colors.white),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                marketText(widget.market.locale, 'calculator'),
-                style: const TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          _CalculatorControl(
-            label: marketText(widget.market.locale, 'calcAmount'),
-            displayValue: formatMarketAmount(amount, widget.market),
-            value: amount,
-            min: widget.market.minAmount,
-            max: widget.market.maxAmount,
-            divisions: widget.market.amountDivisions,
-            onChanged: (value) => setState(() => amount = value),
-          ),
-          const SizedBox(height: 12),
-          _CalculatorControl(
-            label: marketText(widget.market.locale, 'term'),
-            displayValue:
-                '${days.round()} ${marketText(widget.market.locale, 'days')}',
-            value: days,
-            min: 7,
-            max: 365,
-            divisions: 358,
-            onChanged: (value) => setState(() => days = value),
-          ),
-          const SizedBox(height: 12),
-          _CalculatorControl(
-            label: marketText(widget.market.locale, 'rate'),
-            displayValue: '${annualRate.toStringAsFixed(1)} %',
-            value: annualRate,
-            min: 0,
-            max: 50,
-            divisions: 100,
-            onChanged: (value) => setState(() => annualRate = value),
-          ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 260),
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(18, 17, 14, 17),
-            decoration: BoxDecoration(
-              color: SublyColors.purple.withValues(alpha: .10),
-              borderRadius: BorderRadius.circular(16),
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = theme.brightness == Brightness.dark
+        ? LoanCalculatorScreen.brandFuchsia
+        : LoanCalculatorScreen.brandPurple;
+    return FadeSlideIn(
+      delay: const Duration(milliseconds: 120),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x140C1020),
+              blurRadius: 24,
+              offset: Offset(0, 10),
             ),
-            child: Row(
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        marketText(widget.market.locale, 'repay'),
-                        style: const TextStyle(color: Color(0xFF36834A)),
-                      ),
-                      const SizedBox(height: 4),
-                      TweenAnimationBuilder<double>(
-                        tween: Tween(end: total),
-                        duration: const Duration(milliseconds: 260),
-                        builder: (_, value, _) => Text(
-                          formatMarketAmount(value, widget.market),
-                          style: const TextStyle(
-                            color: Color(0xFF258A43),
-                            fontSize: 26,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 Container(
-                  width: 54,
-                  height: 54,
-                  decoration: const BoxDecoration(
-                    color: Colors.white70,
-                    shape: BoxShape.circle,
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    gradient: LoanCalculatorScreen.brandGradient,
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  child: const Icon(
-                    Icons.account_balance_wallet_rounded,
-                    color: Color(0xFF36A95F),
+                  child: const Icon(Icons.calculate_rounded, color: Colors.white),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  marketText(widget.market.locale, 'calculator'),
+                  style: const TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+            _CalculatorControl(
+              accent: accent,
+              label: marketText(widget.market.locale, 'calcAmount'),
+              displayValue: formatMarketAmount(amount, widget.market),
+              value: amount,
+              min: widget.market.minAmount,
+              max: widget.market.maxAmount,
+              divisions: widget.market.amountDivisions,
+              onChanged: (value) => setState(() => amount = value),
+            ),
+            const SizedBox(height: 12),
+            _CalculatorControl(
+              accent: accent,
+              label: marketText(widget.market.locale, 'term'),
+              displayValue:
+                  '${days.round()} ${marketText(widget.market.locale, 'days')}',
+              value: days,
+              min: 7,
+              max: 365,
+              divisions: 358,
+              onChanged: (value) => setState(() => days = value),
+            ),
+            const SizedBox(height: 12),
+            _CalculatorControl(
+              accent: accent,
+              label: marketText(widget.market.locale, 'rate'),
+              displayValue: '${annualRate.toStringAsFixed(1)} %',
+              value: annualRate,
+              min: 0,
+              max: 50,
+              divisions: 100,
+              onChanged: (value) => setState(() => annualRate = value),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 260),
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(18, 17, 14, 17),
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: .10),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          marketText(widget.market.locale, 'repay'),
+                          style: TextStyle(color: accent),
+                        ),
+                        const SizedBox(height: 4),
+                        TweenAnimationBuilder<double>(
+                          tween: Tween(end: total),
+                          duration: const Duration(milliseconds: 260),
+                          builder: (_, value, _) => Text(
+                            formatMarketAmount(value, widget.market),
+                            style: TextStyle(
+                              color: accent,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 54,
+                    height: 54,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.account_balance_wallet_rounded,
+                      color: accent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _CalculatorControl extends StatelessWidget {
   const _CalculatorControl({
+    required this.accent,
     required this.label,
     required this.displayValue,
     required this.value,
@@ -1397,6 +1426,7 @@ class _CalculatorControl extends StatelessWidget {
     required this.divisions,
     required this.onChanged,
   });
+  final Color accent;
   final String label;
   final String displayValue;
   final double value;
@@ -1416,22 +1446,21 @@ class _CalculatorControl extends StatelessWidget {
             constraints: const BoxConstraints(minWidth: 104),
             padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: accent.withValues(alpha: .08),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFE8EEE8)),
-              boxShadow: const [
-                BoxShadow(color: Color(0x0D000000), blurRadius: 12),
-              ],
+              border: Border.all(color: accent.withValues(alpha: .24)),
             ),
             child: Text(
               displayValue,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.w800),
+              style: TextStyle(color: accent, fontWeight: FontWeight.w800),
             ),
           ),
         ],
       ),
       Slider(
+        activeColor: accent,
+        inactiveColor: accent.withValues(alpha: .20),
         value: value,
         min: min,
         max: max,
