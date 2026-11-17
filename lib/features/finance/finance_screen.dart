@@ -9,6 +9,8 @@ import '../../data/models/subscription.dart';
 import '../../data/providers/app_state.dart';
 import '../calculator/screens/loan_calculator_screen.dart';
 
+import 'finance_examples.dart';
+
 part 'finance_editors.dart';
 
 String financeMenu(MarketOption market) =>
@@ -46,6 +48,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
   int section = 0;
   DateTime month = DateUtils.dateOnly(DateTime.now());
   bool incomeChart = false;
+  bool? _showExamples;
 
   static const purple = LoanCalculatorScreen.brandPurple;
   static const fuchsia = LoanCalculatorScreen.brandFuchsia;
@@ -54,7 +57,20 @@ class _FinanceScreenState extends State<FinanceScreen> {
   String t(String ru, String en) => russian ? ru : en;
   String get currency => widget.market.currencyCode;
   AppState get state => widget.state;
-  FinanceData get data => state.finance;
+  bool get showingExamples =>
+      _showExamples ??
+      (!state.finance.subscriptions.any((item) => item.currency == currency) &&
+          !state.finance.entries.any((item) => item.currency == currency) &&
+          !state.finance.limits.keys.any(
+            (key) => key == currency || key.startsWith('$currency:'),
+          ));
+  FinanceData get data => showingExamples
+      ? financeExamples(
+          currency: currency,
+          russian: russian,
+          today: DateTime.now(),
+        )
+      : state.finance;
   String money(int cents, [String? code]) => NumberFormat.simpleCurrency(
     locale: russian ? 'ru' : 'en',
     name: code ?? currency,
@@ -68,6 +84,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
       monthEntries(data.entries, currency, date);
 
   Future<void> save(Future<void> Function() action) async {
+    if (showingExamples) return;
     try {
       await action();
     } on Object {
@@ -107,6 +124,27 @@ class _FinanceScreenState extends State<FinanceScreen> {
                 child: Text(
                   financeMenu(widget.market),
                   style: theme.textTheme.headlineSmall,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  children: [
+                    if (showingExamples) Text(t('Демо-данные', 'Demo data')),
+                    TextButton(
+                      onPressed: () => setState(() {
+                        _showExamples = !showingExamples;
+                        month = DateUtils.dateOnly(DateTime.now());
+                      }),
+                      child: Text(
+                        showingExamples
+                            ? t('Мои данные', 'My data')
+                            : t('Показать пример', 'Show example'),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SingleChildScrollView(
@@ -172,7 +210,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
     IconData icon,
     String title,
     String subtitle,
-    VoidCallback action,
+    VoidCallback? action,
   ) => Card(
     child: ListTile(
       leading: Icon(icon),
@@ -238,7 +276,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
       ),
       headline(t('Регулярные платежи', 'Recurring bills')),
       FilledButton.icon(
-        onPressed: () => subscriptionEditor(),
+        onPressed: showingExamples ? null : () => subscriptionEditor(),
         icon: const Icon(Icons.add),
         label: Text(t('Добавить подписку', 'Add subscription')),
       ),
@@ -267,7 +305,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                 ].join(' · '),
               ),
               trailing: Text(money((item.price * 100).round(), item.currency)),
-              onTap: () => subscriptionEditor(item),
+              onTap: showingExamples ? null : () => subscriptionEditor(item),
             ),
           ),
         ),
@@ -330,18 +368,20 @@ class _FinanceScreenState extends State<FinanceScreen> {
                   ),
           ),
           value: data.alerts,
-          onChanged: (value) => save(
-            () => state.updateFinance(
-              (current) => current.copyWith(alerts: value),
-            ),
-          ),
+          onChanged: showingExamples
+              ? null
+              : (value) => save(
+                  () => state.updateFinance(
+                    (current) => current.copyWith(alerts: value),
+                  ),
+                ),
         ),
       ),
       link(
         Icons.auto_awesome,
         t('Умные правила', 'Smart rules'),
         t('Категория по ключевому слову', 'Categorize by keyword'),
-        rulesPage,
+        showingExamples ? null : rulesPage,
       ),
       panel(
         Column(
@@ -360,7 +400,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
             TextButton(
-              onPressed: editLimit,
+              onPressed: showingExamples ? null : editLimit,
               child: Text(t('Месячный лимит', 'Monthly limit')),
             ),
           ],
@@ -412,7 +452,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
         ),
       ),
       FilledButton.icon(
-        onPressed: () => operationEditor(),
+        onPressed: showingExamples ? null : () => operationEditor(),
         icon: const Icon(Icons.add),
         label: Text(t('Добавить операцию', 'Add transaction')),
       ),
@@ -484,7 +524,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
           Expanded(child: headline(t('Аналитика', 'Analytics'))),
           IconButton(
             tooltip: t('Скопировать отчёт CSV', 'Copy CSV report'),
-            onPressed: records.isEmpty ? null : () => copyReport(records),
+            onPressed: records.isEmpty || showingExamples
+                ? null
+                : () => copyReport(records),
             icon: const Icon(Icons.ios_share),
           ),
           IconButton(
@@ -599,7 +641,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
         ),
       ),
       FilledButton.icon(
-        onPressed: () => operationEditor(),
+        onPressed: showingExamples ? null : () => operationEditor(),
         icon: const Icon(Icons.add),
         label: Text(t('Добавить операцию', 'Add transaction')),
       ),
@@ -703,8 +745,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
           builder: (context, _) {
             final limits = limitsByCategory();
             final totals = spendingByCategory(
-              entriesFor(DateTime.now())
-                  .where((entry) => entry.kind != FinanceKind.income),
+              entriesFor(
+                DateTime.now(),
+              ).where((entry) => entry.kind != FinanceKind.income),
             );
             final categories = {...totals.keys, ...limits.keys}.toList()
               ..sort();
@@ -727,7 +770,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
                       Icons.category_outlined,
                       category,
                       '${money(totals[category] ?? 0)} / ${limits[category] == null ? "—" : money(limits[category]!)}',
-                      () => editLimit(category, context),
+                      showingExamples
+                          ? null
+                          : () => editLimit(category, context),
                     ),
                 ],
               ),
@@ -897,7 +942,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
                                   : -item.cents,
                             ),
                           ),
-                          onTap: () => operationEditor(item, context),
+                          onTap: showingExamples
+                              ? null
+                              : () => operationEditor(item, context),
                         );
                       },
                     ),
