@@ -12,6 +12,7 @@ import '../calculator/screens/loan_calculator_screen.dart';
 import 'finance_examples.dart';
 
 part 'finance_editors.dart';
+part 'finance_presentation.dart';
 
 String financeMenu(MarketOption market) =>
     const {
@@ -103,91 +104,88 @@ class _FinanceScreenState extends State<FinanceScreen> {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: state,
     builder: (context, _) {
-      final theme = Theme.of(context);
+      final theme = _financeTheme(Theme.of(context));
       return Theme(
-        data: theme.copyWith(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: purple,
-            brightness: theme.brightness,
-            primary: theme.brightness == Brightness.dark
-                ? const Color(0xFFE7B5FF)
-                : purple,
-          ),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                child: Text(
-                  financeMenu(widget.market),
-                  style: theme.textTheme.headlineSmall,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 8,
-                  children: [
-                    if (showingExamples) Text(t('Демо-данные', 'Demo data')),
-                    TextButton(
-                      onPressed: () => setState(() {
-                        _showExamples = !showingExamples;
-                        month = DateUtils.dateOnly(DateTime.now());
-                      }),
-                      child: Text(
-                        showingExamples
-                            ? t('Мои данные', 'My data')
-                            : t('Показать пример', 'Show example'),
-                      ),
+        data: theme,
+        child: ColoredBox(
+          color: theme.colorScheme.surface,
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: Text(
+                    financeMenu(widget.market),
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
-                  ],
-                ),
-              ),
-              SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                scrollDirection: Axis.horizontal,
-                child: SegmentedButton<int>(
-                  showSelectedIcon: false,
-                  segments: [
-                    ButtonSegment(
-                      value: 0,
-                      label: Text(t('Подписки', 'Subscriptions')),
-                    ),
-                    ButtonSegment(
-                      value: 1,
-                      label: Text(t('Обзор', 'Insights')),
-                    ),
-                    ButtonSegment(
-                      value: 2,
-                      label: Text(t('Аналитика', 'Analytics')),
-                    ),
-                  ],
-                  selected: {section},
-                  onSelectionChanged: (value) =>
-                      setState(() => section = value.single),
-                ),
-              ),
-              Expanded(
-                child: ListView(
-                  key: PageStorageKey('finance-$section'),
-                  padding: EdgeInsets.fromLTRB(
-                    16,
-                    16,
-                    16,
-                    16 + MediaQuery.paddingOf(context).bottom,
                   ),
-                  children: switch (section) {
-                    0 => subscriptions(),
-                    1 => insights(),
-                    _ => analytics(),
-                  },
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    children: [
+                      if (showingExamples) Text(t('Демо-данные', 'Demo data')),
+                      TextButton(
+                        onPressed: () => setState(() {
+                          _showExamples = !showingExamples;
+                          month = DateUtils.dateOnly(DateTime.now());
+                        }),
+                        child: Text(
+                          showingExamples
+                              ? t('Мои данные', 'My data')
+                              : t('Показать пример', 'Show example'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  scrollDirection: Axis.horizontal,
+                  child: SegmentedButton<int>(
+                    showSelectedIcon: false,
+                    segments: [
+                      ButtonSegment(
+                        value: 0,
+                        label: Text(t('Подписки', 'Subscriptions')),
+                      ),
+                      ButtonSegment(
+                        value: 1,
+                        label: Text(t('Обзор', 'Insights')),
+                      ),
+                      ButtonSegment(
+                        value: 2,
+                        label: Text(t('Аналитика', 'Analytics')),
+                      ),
+                    ],
+                    selected: {section},
+                    onSelectionChanged: (value) =>
+                        setState(() => section = value.single),
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    key: PageStorageKey('finance-$section'),
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      16,
+                      16,
+                      16 + MediaQuery.paddingOf(context).bottom,
+                    ),
+                    children: switch (section) {
+                      0 => subscriptions(),
+                      1 => insights(),
+                      _ => analytics(),
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -199,10 +197,14 @@ class _FinanceScreenState extends State<FinanceScreen> {
   );
 
   Widget headline(String title) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12),
+    padding: const EdgeInsets.only(top: 14, bottom: 12),
     child: Text(
       title,
-      style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+      style: const TextStyle(
+        fontSize: 21,
+        height: 1.2,
+        fontWeight: FontWeight.w700,
+      ),
     ),
   );
 
@@ -211,15 +213,10 @@ class _FinanceScreenState extends State<FinanceScreen> {
     String title,
     String subtitle,
     VoidCallback? action,
-  ) => Card(
-    child: ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      subtitle: Text(subtitle),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: action,
-    ),
-  );
+  ) => _FinanceRow(title: title, details: subtitle, icon: icon, onTap: action);
+
+  Widget financePage(Widget child) =>
+      Theme(data: _financeTheme(Theme.of(context)), child: child);
 
   List<Widget> subscriptions() {
     final today = DateUtils.dateOnly(DateTime.now());
@@ -284,30 +281,21 @@ class _FinanceScreenState extends State<FinanceScreen> {
       if (items.isEmpty)
         panel(Text(t('Подписок пока нет', 'No subscriptions yet'))),
       for (final item in items)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Card(
-            child: ListTile(
-              leading: Icon(
-                item.status == SubscriptionStatus.paused
-                    ? Icons.pause_circle_outline
-                    : Icons.autorenew,
-              ),
-              title: Text(item.name),
-              subtitle: Text(
-                [
-                  if (item.category.isNotEmpty) item.category,
-                  periodLabel(item.period),
-                  if (item.status == SubscriptionStatus.paused)
-                    t('На паузе', 'Paused')
-                  else
-                    dateLabel(item.nextPayment),
-                ].join(' · '),
-              ),
-              trailing: Text(money((item.price * 100).round(), item.currency)),
-              onTap: showingExamples ? null : () => subscriptionEditor(item),
-            ),
-          ),
+        _FinanceRow(
+          title: item.name,
+          details: [
+            if (item.category.isNotEmpty) item.category,
+            periodLabel(item.period),
+            if (item.status == SubscriptionStatus.paused)
+              t('На паузе', 'Paused')
+            else
+              dateLabel(item.nextPayment),
+          ].join(' · '),
+          icon: item.status == SubscriptionStatus.paused
+              ? Icons.pause_circle_outline
+              : Icons.autorenew,
+          amount: money((item.price * 100).round(), item.currency),
+          onTap: showingExamples ? null : () => subscriptionEditor(item),
         ),
     ];
   }
@@ -519,9 +507,10 @@ class _FinanceScreenState extends State<FinanceScreen> {
     final breakdown = categories.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return [
-      Row(
+      headline(t('Аналитика', 'Analytics')),
+      Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Expanded(child: headline(t('Аналитика', 'Analytics'))),
           IconButton(
             tooltip: t('Скопировать отчёт CSV', 'Copy CSV report'),
             onPressed: records.isEmpty || showingExamples
@@ -563,7 +552,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
           children: [
             Text(
               money(selectedTotal),
-              style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              style: _financeAmountStyle.copyWith(fontSize: 28),
             ),
             Text('$change · ${t('к прошлому месяцу', 'vs previous month')}'),
             Text(
@@ -583,23 +572,17 @@ class _FinanceScreenState extends State<FinanceScreen> {
             ? t('Источники доходов', 'Income sources')
             : t('Расходы по категориям', 'Spending breakdown'),
       ),
-      panel(
-        breakdown.isEmpty
-            ? Text(t('Нет операций за месяц', 'No transactions this month'))
-            : Column(
-                children: [
-                  for (final item in breakdown)
-                    ListTile(
-                      dense: true,
-                      title: Text(item.key),
-                      trailing: Text(money(item.value)),
-                      subtitle: LinearProgressIndicator(
-                        value: item.value / selectedTotal,
-                      ),
-                    ),
-                ],
-              ),
-      ),
+      if (breakdown.isEmpty)
+        panel(Text(t('Нет операций за месяц', 'No transactions this month')))
+      else
+        for (final item in breakdown)
+          _FinanceRow(
+            title: item.key,
+            amount: money(item.value),
+            progress: selectedTotal > 0
+                ? (item.value / selectedTotal).clamp(0.0, 1.0).toDouble()
+                : 0,
+          ),
       headline(
         t(
           'Расходы за последние 7 дней периода',
@@ -751,30 +734,32 @@ class _FinanceScreenState extends State<FinanceScreen> {
             );
             final categories = {...totals.keys, ...limits.keys}.toList()
               ..sort();
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(t('Лимиты по категориям', 'Category budgets')),
-              ),
-              body: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  if (categories.isEmpty)
-                    Text(
-                      t(
-                        'Укажите категорию при добавлении расхода.',
-                        'Enter a category when adding an expense.',
+            return financePage(
+              Scaffold(
+                appBar: AppBar(
+                  title: Text(t('Лимиты по категориям', 'Category budgets')),
+                ),
+                body: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    if (categories.isEmpty)
+                      Text(
+                        t(
+                          'Укажите категорию при добавлении расхода.',
+                          'Enter a category when adding an expense.',
+                        ),
                       ),
-                    ),
-                  for (final category in categories)
-                    link(
-                      Icons.category_outlined,
-                      category,
-                      '${money(totals[category] ?? 0)} / ${limits[category] == null ? "—" : money(limits[category]!)}',
-                      showingExamples
-                          ? null
-                          : () => editLimit(category, context),
-                    ),
-                ],
+                    for (final category in categories)
+                      link(
+                        Icons.category_outlined,
+                        category,
+                        '${money(totals[category] ?? 0)} / ${limits[category] == null ? "—" : money(limits[category]!)}',
+                        showingExamples
+                            ? null
+                            : () => editLimit(category, context),
+                      ),
+                  ],
+                ),
               ),
             );
           },
@@ -913,41 +898,39 @@ class _FinanceScreenState extends State<FinanceScreen> {
                     .where((e) => e.currency == currency && filter(e))
                     .toList()
                   ..sort((a, b) => b.date.compareTo(a.date));
-            return Scaffold(
-              appBar: AppBar(title: Text(title)),
-              body: items.isEmpty
-                  ? Center(
-                      child: Text(
-                        t('Операций пока нет', 'No transactions yet'),
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        final item = items[index];
-                        return ListTile(
-                          title: Text(item.title),
-                          subtitle: Text(
-                            [
-                              dateLabel(item.date),
+            return financePage(
+              Scaffold(
+                appBar: AppBar(title: Text(title)),
+                body: items.isEmpty
+                    ? Center(
+                        child: Text(
+                          t('Операций пока нет', 'No transactions yet'),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          final income = item.kind == FinanceKind.income;
+                          return _FinanceRow(
+                            title: item.title,
+                            details: [
                               if (item.category.isNotEmpty) item.category,
+                              dateLabel(item.date),
                               if (item.account.isNotEmpty) item.account,
                               if (item.excluded) t('Исключена', 'Excluded'),
                             ].join(' · '),
-                          ),
-                          trailing: Text(
-                            money(
-                              item.kind == FinanceKind.income
-                                  ? item.cents
-                                  : -item.cents,
-                            ),
-                          ),
-                          onTap: showingExamples
-                              ? null
-                              : () => operationEditor(item, context),
-                        );
-                      },
-                    ),
+                            amount: income
+                                ? '+${money(item.cents)}'
+                                : money(-item.cents),
+                            onTap: showingExamples
+                                ? null
+                                : () => operationEditor(item, context),
+                          );
+                        },
+                      ),
+              ),
             );
           },
         ),
@@ -960,39 +943,41 @@ class _FinanceScreenState extends State<FinanceScreen> {
       MaterialPageRoute(
         builder: (_) => ListenableBuilder(
           listenable: state,
-          builder: (context, _) => Scaffold(
-            appBar: AppBar(title: Text(t('Умные правила', 'Smart rules'))),
-            body: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                Text(
-                  t(
-                    'Если категория не заполнена, применяется первое правило, которое совпало с названием операции.',
-                    'When the category is empty, the first keyword matching the transaction name is used.',
+          builder: (context, _) => financePage(
+            Scaffold(
+              appBar: AppBar(title: Text(t('Умные правила', 'Smart rules'))),
+              body: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  Text(
+                    t(
+                      'Если категория не заполнена, применяется первое правило, которое совпало с названием операции.',
+                      'When the category is empty, the first keyword matching the transaction name is used.',
+                    ),
                   ),
-                ),
-                for (final rule in data.rules.entries)
-                  ListTile(
-                    title: Text(rule.key),
-                    subtitle: Text(rule.value),
-                    trailing: IconButton(
-                      tooltip: t('Удалить правило', 'Delete rule'),
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => save(
-                        () => state.updateFinance(
-                          (current) => current.copyWith(
-                            rules: {...current.rules}..remove(rule.key),
+                  for (final rule in data.rules.entries)
+                    ListTile(
+                      title: Text(rule.key),
+                      subtitle: Text(rule.value),
+                      trailing: IconButton(
+                        tooltip: t('Удалить правило', 'Delete rule'),
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => save(
+                          () => state.updateFinance(
+                            (current) => current.copyWith(
+                              rules: {...current.rules}..remove(rule.key),
+                            ),
                           ),
                         ),
                       ),
                     ),
+                  FilledButton.icon(
+                    onPressed: addRule,
+                    icon: const Icon(Icons.add),
+                    label: Text(t('Добавить правило', 'Add rule')),
                   ),
-                FilledButton.icon(
-                  onPressed: addRule,
-                  icon: const Icon(Icons.add),
-                  label: Text(t('Добавить правило', 'Add rule')),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
