@@ -37,11 +37,28 @@ android {
         versionName = flutter.versionName
     }
 
+    val uploadKeystore = providers.environmentVariable("SUMLY_UPLOAD_KEYSTORE").orNull
+    val uploadPassword = providers.environmentVariable("SUMLY_UPLOAD_PASSWORD").orNull
+    val testApk = providers.environmentVariable("SUMLY_TEST_APK").orNull == "true"
+    require((uploadKeystore == null) == (uploadPassword == null)) {
+        "Set both SUMLY_UPLOAD_KEYSTORE and SUMLY_UPLOAD_PASSWORD to sign the release."
+    }
+    require(!testApk || uploadKeystore == null) {
+        "Test APK mode cannot be combined with upload signing."
+    }
+
+    val uploadSigning = uploadKeystore?.let { path ->
+        signingConfigs.create("upload") {
+            storeFile = file(path)
+            storeType = "PKCS12"
+            storePassword = uploadPassword
+            keyAlias = "sumly-upload"
+            keyPassword = uploadPassword
+        }
+    }
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (testApk) signingConfigs.getByName("debug") else uploadSigning
         }
     }
 }

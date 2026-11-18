@@ -45,6 +45,8 @@ jobs:
           PY
 
       - name: Build APK
+        env:
+          SUMLY_TEST_APK: "true"
         working-directory: ./sample
         run: flutter build apk --release
 
@@ -53,3 +55,14 @@ jobs:
         with:
           name: app-release
           path: sample/build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Build unsigned Android App Bundle
+        working-directory: ./sample
+        run: flutter build appbundle --release
+
+      - name: Upload unsigned bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: sumly-unsigned-aab
+          path: sample/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
